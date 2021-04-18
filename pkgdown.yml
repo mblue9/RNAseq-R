@@ -3,7 +3,9 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   06-rnaseq-day1: 06-rnaseq-day1.html
-last_built: 2021-04-18T20:05Z
+  08-applying-rnaseq: 08-applying-rnaseq.html
+  09-applying-rnaseq-solutions: 09-applying-rnaseq-solutions.html
+last_built: 2021-04-18T20:55Z
 urls:
   reference: https://mblue9.github.io/RNAseq-R//reference
   article: https://mblue9.github.io/RNAseq-R//articles
