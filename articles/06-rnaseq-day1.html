@@ -11,7 +11,8 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="RNA-seq analysis in R">
+<script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="RNA-seq analysis in R">
 <meta property="og:description" content="RNAseqRworkshop">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -89,7 +90,7 @@
 <div id="data-files-and-resources" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data-files-and-resources" class="anchor"></a>Data files and Resources</h1>
-<p>The RNA-Seq data files used is this workshop are available from <a href="https://figshare.com/s/1d788fd384d33e913a2a">Figshare</a>. They were originally obtained from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE60450">GSE60450</a>. We will show you how to import the files into R from the links. Alternatively you could download them and place them in your working directory (e.g. into a folder called <code>data</code> and then refer to them with <code>data/filename</code>).</p>
+<p>The RNA-Seq data files used is this workshop are available from <a href="https://figshare.com/s/1d788fd384d33e913a2a">Figshare</a>. They were originally obtained from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE60450">GSE60450</a>. We will show you how to import the files into R from the links. Alternatively you could download them and place them in your working directory, for example in a folder called <code>data</code> and then refer to them in your code as e.g <code>"data/GSE60450_Lactation-GenewiseCounts.txt"</code>).</p>
 <p>Data files:</p>
 <ul>
 <li><a href="https://ndownloader.figshare.com/files/5057929?private_link=1d788fd384d33e913a2a">GSE60450_Lactation-GenewiseCounts.txt</a></li>
@@ -104,7 +105,7 @@
 <div id="acknowledgements" class="section level1">
 <h1 class="hasAnchor">
 <a href="#acknowledgements" class="anchor"></a>Acknowledgements</h1>
-<p>This material has been inspired by the following resources:<br><a href="http://www.statsci.org/smyth/pubs/QLedgeRPreprint.pdf">It’s DE-licious: a recipe for differential expression analyses of RNA-seq experiments using quasi-likelihood methods in edgeR</a> <span class="citation">[@Lun2016]</span> <a href="http://monashbioinformaticsplatform.github.io/RNAseq-DE-analysis-with-R/RNAseq_DE_analysis_with_R.html">RNAseq data analysis in R</a></p>
+<p>This material was inspired by this <a href="(http://www.statsci.org/smyth/pubs/QLedgeRPreprint.pdf)">case study</a> by <span class="citation">(Lun, Chen, and Smyth 2016)</span> and some of the quality control steps from this <a href="http://monashbioinformaticsplatform.github.io/RNAseq-DE-analysis-with-R/RNAseq_DE_analysis_with_R.html">material</a>.</p>
 </div>
 <div id="bioconductorr-packages" class="section level1">
 <h1 class="hasAnchor">
@@ -117,6 +118,7 @@
 <li>org.Mm.eg.db</li>
 <li>gplots</li>
 <li>RColorBrewer</li>
+<li>NMF</li>
 </ul>
 <p>To install the packages you can:</p>
 <ul>
@@ -132,7 +134,7 @@
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
 <ul>
-<li>Reading in table of counts</li>
+<li>Importing table of counts</li>
 <li>Adding annotation</li>
 <li>Filtering lowly expressed genes</li>
 <li>Quality control</li>
@@ -148,6 +150,15 @@
 <a href="#introduction-and-data-import" class="anchor"></a>Introduction and data import</h1>
 <p>Measuring gene expression on a genome-wide scale has become common practice over the last two decades or so, with microarrays predominantly used pre-2008. With the advent of next generation sequencing technology in 2008, an increasing number of scientists use this technology to measure and understand changes in gene expression in often complex systems. As sequencing costs have decreased, using RNA-Seq to simultaneously measure the expression of tens of thousands of genes for multiple samples has never been easier. The cost of these experiments has now moved from generating the data to storing and analysing it.</p>
 <p>There are many steps involved in analysing an RNA-Seq experiment. Analysing an RNAseq experiment begins with sequencing reads. These are aligned to a reference genome, then the number of reads mapped to each gene can be counted. This results in a table of counts, which is what we perform statistical analyses on in R. While mapping and counting are important and necessary tasks, today we will be starting from the count data and getting stuck into analysis.</p>
+<div id="mouse-mammary-gland-dataset" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mouse-mammary-gland-dataset" class="anchor"></a>Mouse mammary gland dataset</h2>
+<p>The data for this tutorial comes from a paper by <span class="citation">(Fu et al. 2015)</span>. Both the raw data (sequence reads) and processed data (counts) can be downloaded from Gene Expression Omnibus database (GEO) under accession number <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE60450">GSE60450</a>. This study examines the expression profiles of basal stem-cell enriched cells (B) and committed luminal cells (L) in the mammary gland of virgin, pregnant and lactating mice. Six groups are present, with one for each combination of cell type and mouse status. Each group contains two biological replicates. We will first use the counts file as a starting point for our analysis. This data has already been aligned to the mouse genome. The command line tool featureCounts <span class="citation">(Liao, Smyth, and Shi 2014)</span> was used to count reads mapped to mouse genes from Refseq annotation (see <span class="citation">(Fu et al. 2015)</span> for details).</p>
+</div>
+<div id="importing-the-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#importing-the-data" class="anchor"></a>Importing the data</h2>
+<p>Set up an RStudio project <code>File &gt; New Project</code>. Then open a new R script <code>File &gt; New File &gt; R Script</code> and copy the commands below.</p>
 <p>First, let’s load all the packages we will need to analyse the data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioinf.wehi.edu.au/edgeR">edgeR</a></span><span class="op">)</span>
@@ -157,16 +168,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/talgalili/gplots">gplots</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://renozao.github.io/NMF">NMF</a></span><span class="op">)</span></code></pre></div>
-<div id="mouse-mammary-gland-dataset" class="section level2">
-<h2 class="hasAnchor">
-<a href="#mouse-mammary-gland-dataset" class="anchor"></a>Mouse mammary gland dataset</h2>
-<p>The data for this tutorial comes from a Nature Cell Biology paper, EGF-mediated induction of Mcl-1 at the switch to lactation is essential for alveolar cell survival* <span class="citation">[@Fu2015]</span>(<a href="http://www.ncbi.nlm.nih.gov/pubmed/25730472" class="uri">http://www.ncbi.nlm.nih.gov/pubmed/25730472</a>). Both the raw data (sequence reads) and processed data (counts) can be downloaded from Gene Expression Omnibus database (GEO) under accession number <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE60450">GSE60450</a>.</p>
-<p>This study examines the expression profiles of basal stem-cell enriched cells (B) and committed luminal cells (L) in the mammary gland of virgin, pregnant and lactating mice. Six groups are present, with one for each combination of cell type and mouse status. Each group contains two biological replicates. We will first use the counts file as a starting point for our analysis. This data has already been aligned to the mouse genome. The command line tool featureCounts <span class="citation">[@Liao2014]</span> was used to count reads mapped to mouse genes from Refseq annotation (see the <a href="http://www.ncbi.nlm.nih.gov/pubmed/25730472">paper</a> for details).</p>
-</div>
-<div id="reading-in-the-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#reading-in-the-data" class="anchor"></a>Reading in the data</h2>
-<p><em>Set up an RStudio project specifying the directory where you have saved the <code>/data</code> directory</em>. Download and read in the data.</p>
+<p>Then we’ll import the counts and sample information files into R.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Read the data into R</span>
 <span class="va">seqdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.delim</a></span><span class="op">(</span><span class="st">"https://ndownloader.figshare.com/files/5057929?private_link=1d788fd384d33e913a2a"</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -299,7 +301,7 @@
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Store EntrezGeneID as rownames</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">countdata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">seqdata</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></code></pre></div>
-<p>Take a look at the output</p>
+<p>Take a look at the output.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">countdata</span><span class="op">)</span></code></pre></div>
 <pre><code>##           MCL1.DG_BC2CTUACXX_ACTTGA_L002_R1 MCL1.DH_BC2CTUACXX_CAGATC_L002_R1
@@ -344,7 +346,7 @@
 ## 19888                                     0                                 0
 ## 20671                                     3                                10
 ## 27395                                   307                               342</code></pre>
-<p>Now take a look at the column names</p>
+<p>Now take a look at the column names.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">countdata</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1] "MCL1.DG_BC2CTUACXX_ACTTGA_L002_R1" "MCL1.DH_BC2CTUACXX_CAGATC_L002_R1"
@@ -510,7 +512,7 @@
 <a href="#filtering-lowly-expressed-genes" class="anchor"></a>Filtering lowly expressed genes</h1>
 <p>Genes with very low counts across all libraries provide little evidence for differential expression and they interfere with some of the statistical approximations that are used later in the pipeline. They also add to the multiple testing burden when estimating false discovery rates, reducing power to detect differentially expressed genes. These genes should be filtered out prior to further analysis.</p>
 <p>There are a few ways to filter out lowly expressed genes. When there are biological replicates in each group, in this case we have a sample size of 2 in each group, we favour filtering on a minimum counts per million threshold present in at least 2 samples. Two represents the smallest sample size for each group in our experiment. In this dataset, we choose to retain genes if they are expressed at a counts-per-million (CPM) above 0.5 in at least two samples.</p>
-<p>We’ll use the <code>cpm</code> function from the <em>edgeR</em> library <span class="citation">[@robinson2010edgeR]</span> to generate the CPM values and then filter. Note that by converting to CPMs we are normalising for the different sequencing depths for each sample.</p>
+<p>We’ll use the <code>cpm</code> function from the <em>edgeR</em> library <span class="citation">(M. D. Robinson, McCarthy, and Smyth 2010)</span> to generate the CPM values and then filter. Note that by converting to CPMs we are normalising for the different sequencing depths for each sample.</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Obtain CPMs</span>
 <span class="va">myCPM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/cpm.html">cpm</a></span><span class="op">(</span><span class="va">countdata</span><span class="op">)</span>
@@ -567,28 +569,27 @@
 <code class="sourceCode R"><span class="co"># Let's have a look and see whether our threshold of 0.5 does indeed correspond to a count of about 10-15</span>
 <span class="co"># We will look at the first sample</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">myCPM</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,<span class="va">countdata</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<p><img src="06-rnaseq-day1_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
+<p><img src="06-rnaseq-day1_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Let us limit the x and y-axis so we can actually look to see what is happening at the smaller counts</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">myCPM</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,<span class="va">countdata</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">50</span><span class="op">)</span>,xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># Add a vertical line at 0.5 CPM</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span></code></pre></div>
-<p><img src="06-rnaseq-day1_files/figure-html/unnamed-chunk-21-2.png" width="700"></p>
-<blockquote>
-<h2 id="challenge" class="challenge">Challenge</h2>
+<p><img src="06-rnaseq-day1_files/figure-html/unnamed-chunk-19-2.png" width="700"></p>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <ol style="list-style-type: decimal">
 <li>Plot the counts-per-million versus counts for the second sample.</li>
 <li>Add a vertical line at 0.5 and a horizontal line at 10.</li>
-<li>Add the lines again, colouring them blue</li>
+<li>Add the lines again, colouring them blue HINT: use the <code>col</code> parameter.</li>
 </ol>
-<p>HINT: use the <code>col</code> parameter.</p>
-<details><summary><strong>Solution</strong>
-</summary><img src="06-rnaseq-day1_files/figure-html/unnamed-chunk-22-1.png" width="700"></details>
-</blockquote>
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><img src="06-rnaseq-day1_files/figure-html/unnamed-chunk-20-1.png" width="700"></details><p><br></p>
 <p>Now that we’ve checked our filtering method we will filter the DGEList object.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">y</span><span class="op">[</span><span class="va">keep</span>, keep.lib.sizes<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></code></pre></div>
-<p>Note: Alternatively, the edgeR function <code>filterByExpr</code> can be used to perform this method of filtering automatically, as demonstrated in the limma, Glimma and edgeR workflow article <span class="citation">[@Law2018]</span>.</p>
+<p>Note: Alternatively, the edgeR function <code>filterByExpr</code> can be used to perform this method of filtering automatically, as demonstrated in the limma, Glimma and edgeR workflow article <span class="citation">(Charity W. Law et al. 2018)</span>.</p>
 </div>
 <div id="quality-control" class="section level1">
 <h1 class="hasAnchor">
@@ -611,14 +612,15 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="st">"Barplot of library sizes"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/barplot-1.png" width="700"></p>
 <details><summary>
-More details
+More details: labelling
 </summary><div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># we can also adjust the labelling if we want</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">lib.size</span><span class="op">/</span><span class="fl">1e06</span>, names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, las<span class="op">=</span><span class="fl">2</span>, ann<span class="op">=</span><span class="cn">FALSE</span>, cex.names<span class="op">=</span><span class="fl">0.75</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span>side <span class="op">=</span> <span class="fl">1</span>, text <span class="op">=</span> <span class="st">"Samples"</span>, line <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span>side <span class="op">=</span> <span class="fl">2</span>, text <span class="op">=</span> <span class="st">"Library size (millions)"</span>, line <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="st">"Barplot of library sizes"</span><span class="op">)</span></code></pre></div>
-<img src="06-rnaseq-day1_files/figure-html/barplot-labelled-1.png" width="700"></details><p>Count data is not normally distributed, so if we want to examine the distributions of the raw counts we need to log the counts. Next we’ll use box plots to check the distribution of the read counts on the log2 scale. We can use the <code>cpm</code> function to get log2 counts per million, which are corrected for the different library sizes. The <code>cpm</code> function also adds a small offset to avoid taking log of zero.</p>
+<img src="06-rnaseq-day1_files/figure-html/barplot-labelled-1.png" width="700"></details><p><br></p>
+<p>Count data is not normally distributed, so if we want to examine the distributions of the raw counts we need to log the counts. Next we’ll use box plots to check the distribution of the read counts on the log2 scale. We can use the <code>cpm</code> function to get log2 counts per million, which are corrected for the different library sizes. The <code>cpm</code> function also adds a small offset to avoid taking log of zero.</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get log2 counts per million</span>
 <span class="va">logcounts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/cpm.html">cpm</a></span><span class="op">(</span><span class="va">y</span>,log<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
@@ -629,15 +631,15 @@ More details
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="st">"Boxplots of logCPMs (unnormalised)"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/boxplots-1.png" width="700"></p>
 <p>From the boxplots we see that overall the density distributions of raw log-intensities are not identical but still not very different. If a sample is really far above or below the blue horizontal line we may need to investigate that sample further. Another kind of QC plot that is helpful in checking for dodgy samples is a relative log expression <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5798764/">(RLE) plot</a>, which can be generated with <code>plotRLE</code> from the EDASeq package.</p>
-<blockquote>
-<h3 id="discussion" class="challenge">Discussion</h3>
+<div id="challenge">
+<p><i class="far fa-question-circle"></i> <strong>Discussion</strong></p>
 <p>Do any samples appear to be different compared to the others?</p>
-</blockquote>
+</div>
 </div>
 <div id="multidimensional-scaling-plots" class="section level2">
 <h2 class="hasAnchor">
 <a href="#multidimensional-scaling-plots" class="anchor"></a>Multidimensional scaling plots</h2>
-<p>By far, one of the most important plots we make when we analyse RNA-Seq data are MDSplots. An MDSplot is a visualisation of a principle components analysis, which determines the greatest sources of variation in the data. A principle components analysis is an example of an unsupervised analysis, where we don’t need to specify the groups. If your experiment is well controlled and has worked well, what we hope to see is that the greatest sources of variation in the data are the treatments/groups we are interested in. It is also an incredibly useful tool for quality control and checking for outliers. We can use the <code>plotMDS</code> function to create the MDS plot.</p>
+<p>By far, one of the most important plots we make when we analyse RNA-Seq data are MDS plots. An MDS plot is a visualisation of a principle components analysis, which determines the greatest sources of variation in the data. A principle components analysis is an example of an unsupervised analysis, where we don’t need to specify the groups. If your experiment is well controlled and has worked well, what we hope to see is that the greatest sources of variation in the data are the treatments/groups we are interested in. It is also an incredibly useful tool for quality control and checking for outliers. We can use the <code>plotMDS</code> function to create the MDS plot.</p>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/limma/man/plotMDS.html">plotMDS</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/MDSplot-1.png" width="700"></p>
@@ -687,10 +689,12 @@ More details
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>,fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"blue"</span>,<span class="st">"red"</span>,<span class="st">"black"</span><span class="op">)</span>,legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">sampleinfo</span><span class="op">$</span><span class="va">Status</span><span class="op">)</span>,cex<span class="op">=</span><span class="fl">0.8</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="st">"Status"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/MDSplots-colours-1.png" width="960"></p>
-<blockquote>
-<h3 id="discussion-1" class="challenge">Discussion</h3>
-<p>Look at the MDS plot coloured by cell type. Is there something strange going on with the samples? Identify the two samples that don’t appear to be in the right place.</p>
-</blockquote>
+<div id="challenge">
+<p><i class="far fa-question-circle"></i> <strong>Discussion</strong></p>
+<p>Look at the MDS plot coloured by cell type.<br>
+Is there something strange going on with the samples?<br>
+Identify the two samples that don’t appear to be in the right place.</p>
+</div>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># There is a sample info corrected file in your data directory</span>
 <span class="co"># Old sampleinfo</span>
@@ -741,21 +745,24 @@ More details
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>,fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"blue"</span>,<span class="st">"red"</span>,<span class="st">"black"</span><span class="op">)</span>,legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">sampleinfo</span><span class="op">$</span><span class="va">Status</span><span class="op">)</span>,cex<span class="op">=</span><span class="fl">0.8</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="st">"Status"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/MDSplot-corrected-1.png" width="960"></p>
-<blockquote>
-<h3 id="discussion-2" class="challenge">Discussion</h3>
-<p>What is the greatest source of variation in the data (i.e. what does dimension 1 represent)? What is the second greatest source of variation in the data?</p>
-</blockquote>
-<blockquote>
-<h3 id="challenge-1" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="far fa-question-circle"></i> <strong>Discussion</strong></p>
+<p>What is the greatest source of variation in the data (i.e. what does dimension 1 represent)?<br>
+What is the second greatest source of variation in the data?</p>
+</div>
+<p><br></p>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <ol style="list-style-type: decimal">
 <li>Redo the plots choosing your own colours.</li>
 <li>Change the plotting character to a symbol instead of the column names HINT: use <code>pch</code> argument. Try <code>pch=16</code> and see what happens.</li>
 <li>Change the plotting characters such that basal samples have the value <code>1</code> and luminal samples have the value <code>4</code>. Colour by status (lactate, pregnant, virgin)</li>
 </ol>
-</blockquote>
-<details><summary><strong>Solution</strong>
-</summary><pre><code>## [1] "#1B9E77" "#D95F02" "#7570B3"</code></pre>
-<img src="06-rnaseq-day1_files/figure-html/MDSplot-nicer-1.png" width="700"></details><p>The distance between each pair of samples in the MDS plot is calculated as the leading fold change, defined as the root-mean-square of the largest 500 log2-fold changes between that pair of samples. Replicate samples from the same group cluster together in the plot, while samples from different groups form separate clusters. This indicates that the differences between groups are larger than those within groups, i.e., differential expression is greater than the variance and can be detected. In the MDS plot, the distance between basal samples on the left and luminal cells on the right is about 6 units, corresponding to a leading fold change of about 64-fold (2^6 = 64) between basal and luminal. The expression differences between virgin, pregnant and lactating are greater for luminal cells than for basal.</p>
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><pre class="solution"><code>## [1] "#1B9E77" "#D95F02" "#7570B3"</code></pre>
+<img src="06-rnaseq-day1_files/figure-html/MDSplot-nicer-1.png" width="700"></details><p><br></p>
+<p>The distance between each pair of samples in the MDS plot, the leading log-fold change, is defined as the root-mean-square of the largest 500 log2-fold changes between that pair of samples. Replicate samples from the same group cluster together in the plot, while samples from different groups form separate clusters. This indicates that the differences between groups are larger than those within groups, i.e., differential expression is greater than the variance and can be detected. In the MDS plot, the distance between basal samples on the left and luminal cells on the right is about 6 units, corresponding to a leading fold change of about 64-fold (2^6 = 64) between basal and luminal. The expression differences between virgin, pregnant and lactating are greater for luminal cells than for basal.</p>
 <p>Notes</p>
 <ul>
 <li>The MDS plot can be simply generated with <code><a href="https://rdrr.io/pkg/limma/man/plotMDS.html">plotMDS(y)</a></code>. The additional code is purely for aesthetics, to improve the visualization of the groups.</li>
@@ -769,10 +776,10 @@ More details
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>,legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">sampleinfo</span><span class="op">$</span><span class="va">CellType</span><span class="op">)</span>,pch<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/MDSplot-dims3vs4-1.png" width="700"></p>
 <p>Another alternative is to generate an interactive MDS plot using the <em>Glimma</em> package. This allows the user to interactively explore the different dimensions.</p>
+<p><em>Glimma</em> was created to make interactive versions of some of the popular plots from the <em>limma</em> package <span class="citation">(Su et al. 2017)</span>. It can be used to obtain MDS plots, and also mean-difference (MD) and volcano plots which will be covered later. The output of <code>glMDSPlot</code> is an html page (mds/MDS-Plot.html), shown below, that shows the MDS plot on the left, and the amount of variation explained by each dimension in a barplot on the right. The user can hover over points to find out sample information, and switch between successive dimensions in the MDS plot by clicking on the bars in the barplot. The default MDS plots shows dimensions 1 and 2.</p>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">sampleinfo</span><span class="op">$</span><span class="va">SampleName</span>, <span class="va">sampleinfo</span><span class="op">$</span><span class="va">CellType</span>, <span class="va">sampleinfo</span><span class="op">$</span><span class="va">Status</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/Glimma/man/glMDSPlot.html">glMDSPlot</a></span><span class="op">(</span><span class="va">y</span>, labels<span class="op">=</span><span class="va">labels</span>, groups<span class="op">=</span><span class="va">group</span>, folder<span class="op">=</span><span class="st">"mds"</span><span class="op">)</span></code></pre></div>
-<p><em>Glimma</em> was created to make interactive versions of some of the popular plots from the <em>limma</em> package <span class="citation">[@Su2017]</span>. It can be used to obtain MDS plots, and also mean-difference (MD) and volcano plots which will be covered later. The output of <code>glMDSPlot</code> is an html page (/mds/MDS-Plot.html) that shows the MDS plot on the left, and the amount of variation explained by each dimension in a barplot on the right. The user can hover over points to find out sample information, and switch between successive dimensions in the MDS plot by clicking on the bars in the barplot. The default MDS plots shows dimensions 1 and 2.</p>
 <iframe src="http://combine-australia.github.io/RNAseq-R/mds/MDS-Plot.html" width="100%" height="1000">
 </iframe>
 </div>
@@ -830,18 +837,19 @@ More details
 <span class="fu"><a href="https://rdrr.io/r/grDevices/png.html">png</a></span><span class="op">(</span>file<span class="op">=</span><span class="st">"High_var_genes.heatmap.png"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/gplots/man/heatmap.2.html">heatmap.2</a></span><span class="op">(</span><span class="va">highly_variable_lcpm</span>,col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="fu">morecols</span><span class="op">(</span><span class="fl">50</span><span class="op">)</span><span class="op">)</span>,trace<span class="op">=</span><span class="st">"none"</span>, main<span class="op">=</span><span class="st">"Top 500 most variable genes across samples"</span>,ColSideColors<span class="op">=</span><span class="va">col.cell</span>,scale<span class="op">=</span><span class="st">"row"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<blockquote>
-<h3 id="challenge-2" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <ol style="list-style-type: decimal">
 <li>Change the colour scheme to “PiYG” and redo the heatmap. Try <code><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">?RColorBrewer</a></code> and see what other colour schemes are available.</li>
 <li>Change the sample names to <code>group</code> using the <code>labCol</code> argument</li>
 <li>Redo the heatmap using the top 500 LEAST variable genes.</li>
 </ol>
-</blockquote>
-<details><summary><strong>Solution</strong>
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
 </summary><p><img src="06-rnaseq-day1_files/figure-html/heatmap-solution-1.png" width="700"></p>
-<pre><code>## [1] "320714" "93684"  "245638" "93747"  "26433"  "236792"</code></pre>
-<img src="06-rnaseq-day1_files/figure-html/heatmap-solution-2.png" width="700"></details><p>If we wanted to add more annotations, for example colours for both cell type and status, we can’t easily do that with <code>heatmap.2</code>, but we could use the <code>aheatmap</code> function from the <em>NMF</em> package. We can specify which columns we want to use from sampleinfo in <code>annCol=</code> and coloured bars will be added for those.</p>
+<pre class="solution"><code>## [1] "320714" "93684"  "245638" "93747"  "26433"  "236792"</code></pre>
+<img src="06-rnaseq-day1_files/figure-html/heatmap-solution-2.png" width="700"></details><p><br></p>
+<p>If we wanted to add more annotations, for example colours for both cell type and status, we can’t easily do that with <code>heatmap.2</code>, but we could use the <code>aheatmap</code> function from the <em>NMF</em> package. We can specify which columns we want to use from sampleinfo in <code>annCol=</code> and coloured bars will be added for those.</p>
 <div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mypalette</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span><span class="op">(</span><span class="fl">11</span>,<span class="st">"RdYlBu"</span><span class="op">)</span>
 <span class="va">morecols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="va">mypalette</span><span class="op">)</span>
@@ -853,7 +861,7 @@ More details
 <div id="normalisation-for-composition-bias" class="section level1">
 <h1 class="hasAnchor">
 <a href="#normalisation-for-composition-bias" class="anchor"></a>Normalisation for composition bias</h1>
-<p>TMM normalization is performed to eliminate composition biases between libraries <span class="citation">[@robinson2010tmm]</span>. This generates a set of normalization factors, where the product of these factors and the library sizes defines the effective library size. The <code>calcNormFactors</code> function calculates the normalization factors between libraries. TMM normalisation (and most scaling normalisation methods) scale relative to one sample.</p>
+<p>TMM normalization is performed to eliminate composition biases between libraries <span class="citation">(Mark D. Robinson and Oshlack 2010)</span>. This generates a set of normalization factors, where the product of these factors and the library sizes defines the effective library size. The <code>calcNormFactors</code> function calculates the normalization factors between libraries. TMM normalisation (and most scaling normalisation methods) scale relative to one sample.</p>
 <div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Apply normalisation to DGEList object</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/calcNormFactors.html">calcNormFactors</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></code></pre></div>
@@ -890,19 +898,20 @@ More details
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/plotMD.html">plotMD</a></span><span class="op">(</span><span class="va">y</span>,column <span class="op">=</span> <span class="fl">11</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h<span class="op">=</span><span class="fl">0</span>,col<span class="op">=</span><span class="st">"grey"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/MDplots-after-TMM-1.png" width="960"></p>
-<blockquote>
-<h4 id="challenge-3" class="challenge">Challenge</h4>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <p>Plot the biased and unbiased MD plots side by side for the same sample to see the before and after TMM normalisation effect.</p>
-</blockquote>
-<details><summary><strong>Solution</strong>
-</summary><img src="06-rnaseq-day1_files/figure-html/MDplots-solution-1.png" width="960"></details><p><strong>We need to save a few data objects to use for Day 2 so we don’t have to rerun everything</strong></p>
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><img src="06-rnaseq-day1_files/figure-html/MDplots-solution-1.png" width="960"></details><p><br></p>
+<p><strong>We need to save a few data objects to use for Day 2 so we don’t have to rerun everything</strong></p>
 <div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># save(group,y,logcounts,sampleinfo,file="day1objects.Rdata")</span></code></pre></div>
 </div>
 <div id="differential-expression-with-limma-voom" class="section level1">
 <h1 class="hasAnchor">
 <a href="#differential-expression-with-limma-voom" class="anchor"></a>Differential expression with limma-voom</h1>
-<p>Now that we are happy that we have normalised the data and that the quality looks good, we can continue to testing for differentially expressed genes. There are a number of packages to analyse RNA-Seq data. The <em>limma</em> package <span class="citation">[@Ritchie2015]</span> (since version 3.16.0) offers the <code>voom</code> function, which transforms the read counts into logCPMs while taking into account the mean-variance relationship in the data <span class="citation">[@Law2014]</span>. After vooming, users can apply a linear model to the voom transformed data to test for differentially expressed genes, using standard <em>limma</em> commands.</p>
+<p>Now that we are happy that we have normalised the data and that the quality looks good, we can continue to testing for differentially expressed genes. There are a number of packages to analyse RNA-Seq data. The <em>limma</em> package <span class="citation">(Ritchie et al. 2015)</span> offers the <code>voom</code> function, which transforms the read counts into logCPMs while taking into account the mean-variance relationship in the data <span class="citation">(Charity W. Law et al. 2014)</span>. After vooming, users can apply a linear model to the voom transformed data to test for differentially expressed genes, using standard <em>limma</em> commands.</p>
 <p><strong>Load the objects into the workspace that we created yesterday</strong></p>
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># load("day1objects.Rdata")</span>
@@ -1069,13 +1078,13 @@ More details
 <code class="sourceCode R"><span class="co"># What is contained in this object?</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "genes"   "targets" "E"       "weights" "design"</code></pre>
-<blockquote>
-<h3 id="challenge-4" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <ol style="list-style-type: decimal">
 <li>What is in the <code>targets</code> slot of <code>v</code> and what does it correspond to in <code>y</code>?</li>
 <li>What are the dimensions of the <code>weights</code> slot in <code>v</code>?</li>
 </ol>
-</blockquote>
+</div>
 <p>We can repeat the box plots for the normalised data to compare to before normalisation. The expression values in <code>v$E</code> are already log2 values so we don’t need to log-transform.</p>
 <div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
@@ -1131,32 +1140,81 @@ More details
 ## Down          2635
 ## NotSig       10464
 ## Up            2705</code></pre>
-<blockquote>
-<h3 id="challenge-5" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <ol style="list-style-type: decimal">
 <li>Add another contrast to the contrasts matrix: <code>L.PregVsLac = luminal.pregnant - luminal.lactate</code> and re-run the code above. You should have two comparisons in <code>fit.cont</code> now.</li>
 <li>Check out the <code>vennDiagram</code> function (HINT: type <code><a href="https://rdrr.io/pkg/limma/man/venn.html">?vennDiagram</a></code>). Can you show the overlap of differentially expressed genes between the two comparisons? How many genes are commonly differentially expressed?</li>
 </ol>
-<details><summary><strong>Solution</strong>
-</summary></details>
-</blockquote>
-<pre><code>##        B.PregVsLac L.PregVsLac
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><pre class="solution"><code>##        B.PregVsLac L.PregVsLac
 ## Down          2635        3686
 ## NotSig       10464        8451
 ## Up            2705        3667</code></pre>
-<img src="06-rnaseq-day1_files/figure-html/vennDiagram-1.png" width="700">
+<img src="06-rnaseq-day1_files/figure-html/vennDiagram-1.png" width="700"></details><p><br></p>
+<p>The <em>limma</em> <code>topTable</code> function summarises the output in a table format. Significant DE genes for a particular comparison can be identified by selecting genes with a p-value smaller than a chosen cut-off value and/or a fold change greater than a chosen value in this table. By default the table will be sorted by the B statistic, which is the log-odds of differential expression. Usually the B statistic and p-value ranking will be the same, but this is not always the case. We will explicitly rank by p-value, which we can specify with the <code>sort.by</code> argument.</p>
+<p>The <code>topTable</code> command will always output the top 10 genes by default, even if they are not statistically significant. We can specify the coefficient we are interested in by the name we used in the contrast matrix (“B.PregVsLac”), or by the column number.</p>
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">fit.cont</span>,coef<span class="op">=</span><span class="st">"B.PregVsLac"</span>,sort.by<span class="op">=</span><span class="st">"p"</span><span class="op">)</span></code></pre></div>
+<pre><code>##        ENTREZID  SYMBOL                                     GENENAME     logFC
+## 24117     24117    Wif1                      Wnt inhibitory factor 1  1.819943
+## 381290   381290  Atp2b4 ATPase, Ca++ transporting, plasma membrane 4 -2.143885
+## 78896     78896   Ecrg4                      ECRG4 augurin precursor  2.807548
+## 226101   226101    Myof                                    myoferlin -2.329744
+## 16012     16012  Igfbp6 insulin-like growth factor binding protein 6 -2.896115
+## 231830   231830 Micall2                                 MICAL-like 2  2.253400
+## 16669     16669   Krt19                                   keratin 19 -2.312721
+## 55987     55987   Cpxm2            carboxypeptidase X 2 (M14 family) -1.515469
+## 231991   231991   Creb5    cAMP responsive element binding protein 5 -2.598105
+## 14620     14620    Gjb3                 gap junction protein, beta 3  3.600094
+##         AveExpr         t      P.Value    adj.P.Val        B
+## 24117  2.975545  20.10780 1.063770e-10 1.016240e-06 14.96977
+## 381290 3.944066 -19.07495 1.982934e-10 1.016240e-06 14.39556
+## 78896  3.036519  18.54773 2.758828e-10 1.016240e-06 14.07416
+## 226101 6.223525 -18.26861 3.297667e-10 1.016240e-06 13.85802
+## 16012  1.978449 -18.21525 3.413066e-10 1.016240e-06 13.46984
+## 231830 4.760597  18.02627 3.858161e-10 1.016240e-06 13.67600
+## 16669  8.741892 -17.07937 7.264548e-10 1.640127e-06 13.17357
+## 55987  2.834512 -16.64333 9.829870e-10 1.718703e-06 12.88782
+## 231991 4.275930 -16.53634 1.059885e-09 1.718703e-06 12.66020
+## 14620  3.525281  16.46627 1.113755e-09 1.718703e-06 12.54071</code></pre>
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## This will give the same output</span>
+<span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">fit.cont</span>,coef<span class="op">=</span><span class="fl">1</span>,sort.by<span class="op">=</span><span class="st">"p"</span><span class="op">)</span></code></pre></div>
+<pre><code>##        ENTREZID  SYMBOL                                     GENENAME     logFC
+## 24117     24117    Wif1                      Wnt inhibitory factor 1  1.819943
+## 381290   381290  Atp2b4 ATPase, Ca++ transporting, plasma membrane 4 -2.143885
+## 78896     78896   Ecrg4                      ECRG4 augurin precursor  2.807548
+## 226101   226101    Myof                                    myoferlin -2.329744
+## 16012     16012  Igfbp6 insulin-like growth factor binding protein 6 -2.896115
+## 231830   231830 Micall2                                 MICAL-like 2  2.253400
+## 16669     16669   Krt19                                   keratin 19 -2.312721
+## 55987     55987   Cpxm2            carboxypeptidase X 2 (M14 family) -1.515469
+## 231991   231991   Creb5    cAMP responsive element binding protein 5 -2.598105
+## 14620     14620    Gjb3                 gap junction protein, beta 3  3.600094
+##         AveExpr         t      P.Value    adj.P.Val        B
+## 24117  2.975545  20.10780 1.063770e-10 1.016240e-06 14.96977
+## 381290 3.944066 -19.07495 1.982934e-10 1.016240e-06 14.39556
+## 78896  3.036519  18.54773 2.758828e-10 1.016240e-06 14.07416
+## 226101 6.223525 -18.26861 3.297667e-10 1.016240e-06 13.85802
+## 16012  1.978449 -18.21525 3.413066e-10 1.016240e-06 13.46984
+## 231830 4.760597  18.02627 3.858161e-10 1.016240e-06 13.67600
+## 16669  8.741892 -17.07937 7.264548e-10 1.640127e-06 13.17357
+## 55987  2.834512 -16.64333 9.829870e-10 1.718703e-06 12.88782
+## 231991 4.275930 -16.53634 1.059885e-09 1.718703e-06 12.66020
+## 14620  3.525281  16.46627 1.113755e-09 1.718703e-06 12.54071</code></pre>
+<p>We can save the results table using the <code>write.csv</code> function, which writes the results out to a csv file, which you can open in Excel.</p>
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">limma.res</span>,file<span class="op">=</span><span class="st">"B.PregVsLacResults.csv"</span>,row.names<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-</div>
-<div id="writing-out-the-results" class="section level1">
-<h1 class="hasAnchor">
-<a href="#writing-out-the-results" class="anchor"></a>Writing out the results</h1>
 </div>
 <div id="plots-after-testing-for-de" class="section level1">
 <h1 class="hasAnchor">
 <a href="#plots-after-testing-for-de" class="anchor"></a>Plots after testing for DE</h1>
 <p>Let’s do a few plots to make sure everything looks good and that we haven’t made a mistake in the analysis. Genome-wide plots that are useful for checking are MAplots (or MDplots) and volcano plots. There are functions in limma for plotting these with <code>fit.cont</code> as input.</p>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># We want to highlight the significant genes. We can get this from decideTests.</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/plotMD.html">plotMD</a></span><span class="op">(</span><span class="va">fit.cont</span>,coef<span class="op">=</span><span class="fl">1</span>,status<span class="op">=</span><span class="va">summa.fit</span><span class="op">[</span>,<span class="st">"B.PregVsLac"</span><span class="op">]</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, hl.col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"blue"</span>,<span class="st">"red"</span><span class="op">)</span><span class="op">)</span>
@@ -1166,13 +1224,14 @@ More details
 <span class="co"># let's highlight the top 100 most DE genes</span>
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/volcanoplot.html">volcanoplot</a></span><span class="op">(</span><span class="va">fit.cont</span>,coef<span class="op">=</span><span class="fl">1</span>,highlight<span class="op">=</span><span class="fl">100</span>,names<span class="op">=</span><span class="va">fit.cont</span><span class="op">$</span><span class="va">genes</span><span class="op">$</span><span class="va">SYMBOL</span>, main<span class="op">=</span><span class="st">"B.PregVsLac"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/plots-postDE-1.png" width="960"></p>
-<blockquote>
-<h3 id="challenge-6" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <p>Look at the MD plot and volcano plot for the second comparison, <code>L.PregVsLac</code>. Change the number of highlighted genes to 200 in the volcano plot.</p>
-</blockquote>
-<p><img src="06-rnaseq-day1_files/figure-html/plots-postDE-solution-1.png" width="960"></p>
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><img src="06-rnaseq-day1_files/figure-html/plots-postDE-solution-1.png" width="960"></details><p><br></p>
 <p>Before following up on the DE genes with further lab work, it is recommended to have a look at the expression levels of the individual samples for the genes of interest. We can quickly look at grouped expression using <code>stripchart</code>. We can use the normalised log expression values in the voom object (<code>v$E</code>).</p>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># Let's look at the first gene in the topTable, Wif1, which has a rowname 24117</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/stripchart.html">stripchart</a></span><span class="op">(</span><span class="va">v</span><span class="op">$</span><span class="va">E</span><span class="op">[</span><span class="st">"24117"</span>,<span class="op">]</span><span class="op">~</span><span class="va">group</span><span class="op">)</span>
@@ -1183,12 +1242,12 @@ More details
 <span class="fu"><a href="https://rdrr.io/r/graphics/stripchart.html">stripchart</a></span><span class="op">(</span><span class="va">v</span><span class="op">$</span><span class="va">E</span><span class="op">[</span><span class="st">"24117"</span>,<span class="op">]</span><span class="op">~</span><span class="va">group</span>,vertical<span class="op">=</span><span class="cn">TRUE</span>,las<span class="op">=</span><span class="fl">2</span>,cex.axis<span class="op">=</span><span class="fl">0.8</span>,pch<span class="op">=</span><span class="fl">16</span>,cex<span class="op">=</span><span class="fl">1.3</span>,col<span class="op">=</span><span class="va">nice.col</span>,method<span class="op">=</span><span class="st">"jitter"</span>,ylab<span class="op">=</span><span class="st">"Normalised log2 expression"</span>,main<span class="op">=</span><span class="st">"Wif1"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/stripcharts-1.png" width="1152"></p>
 <p>Notice anything interesting about the expression of this gene?</p>
-<blockquote>
-<h3 id="challenge-7" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <p>Take the top gene from the L.PregVsLactate comparison and make a stripchart of grouped expression as above. (Don’t forget to change the title of the plot.)</p>
-</blockquote>
-<details><summary><strong>Solution</strong>
-</summary><pre><code>##        ENTREZID   SYMBOL
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><pre class="solution"><code>##        ENTREZID   SYMBOL
 ## 12992     12992  Csn1s2b
 ## 13358     13358  Slc25a1
 ## 20531     20531  Slc34a2
@@ -1221,8 +1280,9 @@ More details
 ## 13645  -5.362664 0.7359047 -28.14183 1.937947e-12 3.828415e-09 17.22920
 ## 12683  -4.840655 3.3749575 -27.04271 3.123304e-12 5.484522e-09 18.58932
 ## 26366  -3.295621 1.8210142 -25.45612 6.437086e-12 1.005946e-08 17.82256</code></pre>
-<img src="06-rnaseq-day1_files/figure-html/stripcharts-solution-1.png" width="700"></details><p>An interactive version of the volcano plot above that includes the raw per sample values in a separate panel is possible via the <code>glXYPlot</code> function in the <em>Glimma</em> package.</p>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<img src="06-rnaseq-day1_files/figure-html/stripcharts-solution-1.png" width="700"></details><p><br></p>
+<p>An interactive version of the volcano plot above that includes the raw per sample values in a separate panel is possible via the <code>glXYPlot</code> function in the <em>Glimma</em> package.</p>
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">group2</span> <span class="op">&lt;-</span> <span class="va">group</span>
 <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">group2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"basal.lactate"</span>,<span class="st">"basal.preg"</span>,<span class="st">"basal.virgin"</span>,<span class="st">"lum.lactate"</span>, <span class="st">"lum.preg"</span>, <span class="st">"lum.virgin"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/Glimma/man/glXYPlot.html">glXYPlot</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">fit.cont</span><span class="op">$</span><span class="va">coefficients</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, y<span class="op">=</span><span class="va">fit.cont</span><span class="op">$</span><span class="va">lods</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,
@@ -1236,8 +1296,8 @@ More details
 <div id="testing-relative-to-a-threshold-treat" class="section level1">
 <h1 class="hasAnchor">
 <a href="#testing-relative-to-a-threshold-treat" class="anchor"></a>Testing relative to a threshold (TREAT)</h1>
-<p>When there is a lot of differential expression, sometimes we may want to cut-off on a fold change threshold as well as a p-value threshold so that we follow up on the most biologically significant genes. However, it is not recommended to simply rank by p-value and then discard genes with small logFC’s, as this has been shown to increase the false discovery rate. In other words, you are not controlling the false discovery rate at 5% any more. There is a function called <code>treat</code> in the <em>limma</em> package that performs this style of analysis correctly <span class="citation">[@McCarthy2009]</span>. <code>treat</code> will simply take our <code>fit.cont</code> object, as well as a user-specified log fold change cut-off, and recalculate the moderated t-statistics and p-values with the new information about logFC.</p>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<p>When there is a lot of differential expression, sometimes we may want to cut-off on a fold change threshold as well as a p-value threshold so that we follow up on the most biologically significant genes. However, it is not recommended to simply rank by p-value and then discard genes with small logFC’s, as this has been shown to increase the false discovery rate. In other words, you are not controlling the false discovery rate at 5% any more. There is a function called <code>treat</code> in the <em>limma</em> package that performs this style of analysis correctly <span class="citation">(McCarthy and Smyth 2009)</span>. <code>treat</code> will simply take our <code>fit.cont</code> object, as well as a user-specified log fold change cut-off, and recalculate the moderated t-statistics and p-values with the new information about logFC.</p>
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Let's decide that we are only interested in genes that have a absolute logFC of 1.</span>
 <span class="co"># This corresponds to a fold change of 2, or 0.5 (i.e. double or half).</span>
 <span class="co"># We can perform a treat analysis which ranks our genes according to p-value AND logFC.</span>
@@ -1249,7 +1309,7 @@ More details
 ## Down            53         631
 ## NotSig       15677       14775
 ## Up              74         398</code></pre>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">fit.treat</span>,coef<span class="op">=</span><span class="fl">1</span>,sort.by<span class="op">=</span><span class="st">"p"</span><span class="op">)</span></code></pre></div>
 <pre><code>##        ENTREZID  SYMBOL                                     GENENAME     logFC
 ## 211577   211577  Mrgprf                    MAS-related GPR, member F -5.146268
@@ -1273,7 +1333,7 @@ More details
 ## 226101  6.2235246 -10.42714 1.012983e-07 2.001148e-04
 ## 381290  3.9440659 -10.17758 1.322118e-07 2.050763e-04
 ## 231991  4.2759295 -10.17157 1.330809e-07 2.050763e-04</code></pre>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Notice that much fewer genes are highlighted in the MAplot</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/plotMD.html">plotMD</a></span><span class="op">(</span><span class="va">fit.treat</span>,coef<span class="op">=</span><span class="fl">1</span>,status<span class="op">=</span><span class="va">res.treat</span><span class="op">[</span>,<span class="st">"B.PregVsLac"</span><span class="op">]</span>, values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>, hl.col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"blue"</span>,<span class="st">"red"</span><span class="op">)</span><span class="op">)</span>
@@ -1281,17 +1341,17 @@ More details
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/plotMD.html">plotMD</a></span><span class="op">(</span><span class="va">fit.treat</span>,coef<span class="op">=</span><span class="fl">2</span>,status<span class="op">=</span><span class="va">res.treat</span><span class="op">[</span>,<span class="st">"L.PregVsLac"</span><span class="op">]</span>, values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>, hl.col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"blue"</span>,<span class="st">"red"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h<span class="op">=</span><span class="fl">0</span>,col<span class="op">=</span><span class="st">"grey"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/MDplots-TREAT-1.png" width="960"></p>
-<blockquote>
-<h3 id="challenge-8" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <p>Change the cut-off so that we are interested in genes that change at least 50% on the fold change scale.</p>
 <p>HINT: what is the corresponding logFC value of 50% fold change? Assume basal.pregnant is 50% higher than basal.lactate</p>
-</blockquote>
-<details><summary><strong>Solution</strong>
-</summary><pre><code>##        B.PregVsLac L.PregVsLac
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><pre class="solution"><code>##        B.PregVsLac L.PregVsLac
 ## Down           234        1328
 ## NotSig       15250       13397
 ## Up             320        1079</code></pre>
-<pre><code>##        ENTREZID  SYMBOL                                     GENENAME     logFC
+<pre class="solution"><code>##        ENTREZID  SYMBOL                                     GENENAME     logFC
 ## 78896     78896   Ecrg4                      ECRG4 augurin precursor  2.807548
 ## 16012     16012  Igfbp6 insulin-like growth factor binding protein 6 -2.896115
 ## 211577   211577  Mrgprf                    MAS-related GPR, member F -5.146268
@@ -1313,8 +1373,9 @@ More details
 ## 231830  4.7605970  13.34681 6.327022e-09 1.249903e-05
 ## 21953   0.3020716 -12.95757 9.721628e-09 1.399330e-05
 ## 231991  4.2759295 -12.81319 1.010560e-08 1.399330e-05</code></pre>
-</details><p>An interactive version of the mean-difference plots is possible via the <code>glMDPlot</code> function in the <em>Glimma</em> package.</p>
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+</details><p><br></p>
+<p>An interactive version of the mean-difference plots is possible via the <code>glMDPlot</code> function in the <em>Glimma</em> package.</p>
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/Glimma/man/glMDPlot.html">glMDPlot</a></span><span class="op">(</span><span class="va">fit.treat</span>, coef<span class="op">=</span><span class="fl">1</span>, counts<span class="op">=</span><span class="va">v</span><span class="op">$</span><span class="va">E</span>, groups<span class="op">=</span><span class="va">group2</span>,
         status<span class="op">=</span><span class="va">res.treat</span>, side.main<span class="op">=</span><span class="st">"ENTREZID"</span>, main<span class="op">=</span><span class="st">"B.PregVsLac"</span>,
         folder<span class="op">=</span><span class="st">"md"</span><span class="op">)</span></code></pre></div>
@@ -1332,7 +1393,7 @@ More details
 <a href="#gene-ontology-testing-with-goana" class="anchor"></a>Gene ontology testing with goana</h2>
 <p>First, we will perform a gene ontology (GO) enrichment analysis using the <code>goana</code> function in <em>limma</em>. There are approximately 20,000 GO terms, and they are split into three categories: BP (biological process), MF (molecular function) and CC (cellular component). <code>goana</code> uses annotation from the appropriate Bioconductor package and can be used for any of the five species specified (Hs, Mm, Rn, Dm or Pt). <code>goana</code> has an advantage over other methods, such as DAVID, in that there is the option to take into account the gene length bias inherent in RNA-Seq data.</p>
 <p>Suppose we want to identify GO terms that are over-represented in the basal lactating group compared to the basal pregnancy group. This can be achieved by applying the goana function to the differential expression results of that comparison. <code>goana</code> takes the <code>fit.cont</code> object, the coefficient of interest and the species. The top set of most enriched GO terms can be viewed with the topGO function.</p>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">go</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/limma/man/goana.html">goana</a></span><span class="op">(</span><span class="va">fit.cont</span>, coef<span class="op">=</span><span class="st">"B.PregVsLac"</span>,species <span class="op">=</span> <span class="st">"Mm"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/topGO.html">topGO</a></span><span class="op">(</span><span class="va">go</span>, n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                            Term Ont    N  Up Down         P.Up
@@ -1358,8 +1419,8 @@ More details
 ## GO:0005840 1.0000000
 ## GO:0022625 1.0000000</code></pre>
 <p>The row names of the output are the universal identifiers of the GO terms, with one term per row. The Term column gives the names of the GO terms. These terms cover three domains - biological process (BP), cellular component (CC) and molecular function (MF), as shown in the Ont column. The N column represents the total number of genes that are annotated with each GO term. The Up and Down columns represent the number of differentially expressed genes that overlap with the genes in the GO term. The P.Up and P.Down columns contain the p-values for over-representation of the GO term across the set of up- and down-regulated genes, respectively. The output table is sorted by the minimum of P.Up and P.Down by default.</p>
-<p>An additional refinement is to supply <code>goana</code> with the gene lengths using the <code>covariate</code> argument. In the original data matrix that we loaded into R, there is a column called “Length”.</p>
-<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<p>An additional refinement is to supply <code>goana</code> with the gene lengths using the <code>covariate</code> argument. In the original data matrix that we loaded into R, there is a column called “Length.”</p>
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">seqdata</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1] "EntrezGeneID"                      "Length"                           
 ##  [3] "MCL1.DG_BC2CTUACXX_ACTTGA_L002_R1" "MCL1.DH_BC2CTUACXX_CAGATC_L002_R1"
@@ -1369,12 +1430,12 @@ More details
 ## [11] "MCL1.LC_BC2CTUACXX_GCCAAT_L001_R1" "MCL1.LD_BC2CTUACXX_GGCTAC_L001_R1"
 ## [13] "MCL1.LE_BC2CTUACXX_TAGCTT_L001_R1" "MCL1.LF_BC2CTUACXX_CTTGTA_L001_R1"</code></pre>
 <p>In order to get the gene lengths for every gene in <code>fit.cont</code>, we can use the <code>match</code> command. Note that the gene length supplied needs to be in the correct order.</p>
-<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">fit.cont</span><span class="op">)</span>,<span class="va">seqdata</span><span class="op">$</span><span class="va">EntrezGeneID</span><span class="op">)</span>
 <span class="va">gene_length</span> <span class="op">&lt;-</span> <span class="va">seqdata</span><span class="op">$</span><span class="va">Length</span><span class="op">[</span><span class="va">m</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gene_length</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 3634 3130 4203 2433 2847 2241</code></pre>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Rerun goana with gene length information</span>
 <span class="va">go_length</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/limma/man/goana.html">goana</a></span><span class="op">(</span><span class="va">fit.cont</span>,coef<span class="op">=</span><span class="st">"B.PregVsLac"</span>,species<span class="op">=</span><span class="st">"Mm"</span>,
                    covariate<span class="op">=</span><span class="va">gene_length</span><span class="op">)</span>
@@ -1401,12 +1462,12 @@ More details
 ## GO:0005840 1.0000000
 ## GO:0003735 1.0000000
 ## GO:0044391 1.0000000</code></pre>
-<blockquote>
-<h3 id="challenge-9" class="challenge">Challenge</h3>
-<p>Perform GO analysis for the second comparison, “L.PregVsLac”, taking into account gene length information</p>
-</blockquote>
-<details><summary><strong>Solution</strong>
-</summary><pre><code>##                                                                     Term Ont
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
+<p>Perform GO analysis for the second comparison, “L.PregVsLac,” taking into account gene length information</p>
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><pre class="solution"><code>##                                                                     Term Ont
 ## GO:0031090                                            organelle membrane  CC
 ## GO:0005739                                                 mitochondrion  CC
 ## GO:0005783                                         endoplasmic reticulum  CC
@@ -1428,7 +1489,8 @@ More details
 ## GO:0050789 8345 2257 1865 1.217543e-28 9.999991e-01
 ## GO:0044281 1376  261  494 9.999722e-01 3.169760e-28
 ## GO:0005634 6012 1693 1336 1.013031e-27 9.998554e-01</code></pre>
-</details><p>Notes</p>
+</details><p><br></p>
+<p>Notes</p>
 <ul>
 <li>Users can specify the domain of the enriched GO terms in topGO. For instance, topGO(go,ontology=“BP”) lists the top set of most enriched GO terms that are related to a biological process. This avoids other domains that are not of interest.</li>
 <li>The goana function uses the NCBI RefSeq annotation. Therefore, the Entrez Gene identifier (ID) should be supplied for each gene as the row names of the fit object.</li>
@@ -1438,9 +1500,9 @@ More details
 <div id="camera-gene-set-testing-using-the-broads-curated-gene-sets" class="section level2">
 <h2 class="hasAnchor">
 <a href="#camera-gene-set-testing-using-the-broads-curated-gene-sets" class="anchor"></a>CAMERA gene set testing using the Broad’s curated gene sets</h2>
-<p>Other databases of gene sets that are available come from the Broad Institute’s Molecular Signatures Database (<a href="http://software.broadinstitute.org/gsea/msigdb">MSigDB</a>). CAMERA is good option for testing a very large number of gene sets such as the MSigDB sets, as it is very fast. CAMERA is known as a competitive gene set test, however it has the advantage that it can take into account inter-gene correlation within each gene set <span class="citation">[@wu2012camera]</span>. It also works seamlessly with a <code>voom</code> object, taking into account the mean-variance relationship in RNA-Seq data.</p>
-<p>Here we will be using the C2 gene sets for mouse, available as .rdata files from the WEHI bioinformatics page <a href="http://bioinf.wehi.edu.au/MSigDB/index.html">http://bioinf.wehi.edu.au/MSigDB/index.html</a>. The C2 gene sets contain &gt;5000 curated gene sets collected from a variety of places: BioCarta, KEGG, Pathway Interaction Database, Reactome as well as some published studies. It doesn’t include GO terms.</p>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<p>Other databases of gene sets that are available come from the Broad Institute’s Molecular Signatures Database (<a href="http://software.broadinstitute.org/gsea/msigdb">MSigDB</a>). CAMERA is good option for testing a very large number of gene sets such as the MSigDB sets, as it is very fast. CAMERA is known as a competitive gene set test, however it has the advantage that it can take into account inter-gene correlation within each gene set <span class="citation">(Wu and Smyth 2012)</span>. It also works seamlessly with a <code>voom</code> object, taking into account the mean-variance relationship in RNA-Seq data.</p>
+<p>Here we will be using the C2 gene sets for mouse, available as .rdata files from the <a href="http://bioinf.wehi.edu.au/MSigDB/index.html">WEHI MSigDB page</a>. The C2 gene sets contain &gt;5000 curated gene sets collected from a variety of places: BioCarta, KEGG, Pathway Interaction Database, Reactome as well as some published studies. It doesn’t include GO terms.</p>
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load in the mouse c2 gene sets as Mm.c2</span>
 <span class="va">Mm.c2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span><span class="op">(</span><span class="st">"http://bioinf.wehi.edu.au/MSigDB/v7.1/Mm.c2.all.v7.1.entrez.rds"</span><span class="op">)</span><span class="op">)</span>
 
@@ -1451,18 +1513,18 @@ More details
 ## [3] "KEGG_PENTOSE_PHOSPHATE_PATHWAY"               
 ## [4] "KEGG_PENTOSE_AND_GLUCURONATE_INTERCONVERSIONS"
 ## [5] "KEGG_FRUCTOSE_AND_MANNOSE_METABOLISM"</code></pre>
-<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Number of gene sets in C2</span>
 <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Mm.c2</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 5529</code></pre>
 <p>The gene identifiers are Entrez Gene ID, which is the same as the rownames of our voom object. We need to map the Entrez gene ids between the list of gene sets and our voom object. We can do this using the <code>ids2indices</code> function.</p>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">c2.ind</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/limma/man/ids2indices.html">ids2indices</a></span><span class="op">(</span><span class="va">Mm.c2</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>CAMERA takes as input the voom object <code>v</code>, the indexed list of gene sets <code>c2.ind</code>, the design matrix, the contrast being tested, as well as some other arguments. By default, CAMERA can estimate the correlation for each gene set separately. However, in practise, it works well to set a small inter-gene correlation of about 0.05 using the <code>inter.gene.cor</code> argument.</p>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gst.camera</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/limma/man/camera.html">camera</a></span><span class="op">(</span><span class="va">v</span>,index<span class="op">=</span><span class="va">c2.ind</span>,design<span class="op">=</span><span class="va">design</span>,contrast <span class="op">=</span> <span class="va">cont.matrix</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,inter.gene.cor<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span></code></pre></div>
 <p>CAMERA outputs a dataframe of the resulting statistics, with each row denoting a different gene set. The output is ordered by p-value so that the most significant should be at the top. Let’s look at the top 5 gene sets:</p>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gst.camera</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></code></pre></div>
 <pre><code>##                                                            NGenes Direction
 ## REACTOME_EUKARYOTIC_TRANSLATION_ELONGATION                    103        Up
@@ -1483,26 +1545,26 @@ More details
 ## REACTOME_RRNA_PROCESSING                                   3.237631e-05
 ## REACTOME_RESPONSE_OF_EIF2AK4_GCN2_TO_AMINO_ACID_DEFICIENCY 4.414867e-05</code></pre>
 <p>The total number of significant gene sets at 5% FDR is</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">gst.camera</span><span class="op">$</span><span class="va">FDR</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ## FALSE  TRUE 
 ##  5472    50</code></pre>
-<p>You can write out the camera results to a csv file to open in excel.</p>
-<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
+<p>You can write out the camera results to a csv file to open in Excel.</p>
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">gst.camera</span>,file<span class="op">=</span><span class="st">"gst_BPregVsLac.csv"</span><span class="op">)</span></code></pre></div>
-<blockquote>
-<h3 id="challenge-10" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <ol style="list-style-type: decimal">
 <li>Run <code>camera</code> on the second contrast in the contrast matrix.</li>
 <li>Run <code>camera</code> on a different set of MSigDB gene sets, the hallmark datasets, <code>mouse_H_v5.rdata</code>. You will need to load in the hallmark gene sets. Call the object <code>Mm.H</code>.</li>
 </ol>
-</blockquote>
-<details><summary><strong>Solution</strong>
-</summary><pre><code>## 
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><pre class="solution"><code>## 
 ## FALSE  TRUE 
 ##    47     3</code></pre>
-<pre><code>##                                    NGenes Direction       PValue          FDR
+<pre class="solution"><code>##                                    NGenes Direction       PValue          FDR
 ## HALLMARK_MYC_TARGETS_V2                63        Up 7.644478e-09 3.822239e-07
 ## HALLMARK_MYC_TARGETS_V1               235        Up 2.209872e-06 5.524680e-05
 ## HALLMARK_E2F_TARGETS                  241        Up 1.016821e-03 1.694701e-02
@@ -1513,14 +1575,14 @@ More details
 ## HALLMARK_TGF_BETA_SIGNALING            91        Up 1.018493e-01 6.365581e-01
 ## HALLMARK_ALLOGRAFT_REJECTION          212        Up 1.183176e-01 6.573201e-01
 ## HALLMARK_MTORC1_SIGNALING             263        Up 2.026148e-01 8.652915e-01</code></pre>
-</details>
+</details><p><br></p>
 </div>
 <div id="roast-gene-set-testing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#roast-gene-set-testing" class="anchor"></a>ROAST gene set testing</h2>
-<p>ROAST is an example of a self-contained gene set test <span class="citation">[@wu2010roast]</span>. It asks the question, “Do the genes in my set tend to be differentially expressed between my conditions of interest?”. ROAST doesn’t care about what the other genes in the experiment are doing, which is different to <code>camera</code> and <code>goana</code>. ROAST is a good option for when you’re interested in a specific set, or a few sets. It is not really used to test thousands of sets at one time.</p>
+<p>ROAST is an example of a self-contained gene set test <span class="citation">(Wu et al. 2010)</span>. It asks the question, “Do the genes in my set tend to be differentially expressed between my conditions of interest?” ROAST doesn’t care about what the other genes in the experiment are doing, which is different to <code>camera</code> and <code>goana</code>. ROAST is a good option for when you’re interested in a specific set, or a few sets. It is not really used to test thousands of sets at one time.</p>
 <p>From the Hallmark gene sets, two MYC pathways were most significant.</p>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">H.camera</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="op">]</span></code></pre></div>
 <pre><code>##                                    NGenes Direction       PValue          FDR
 ## HALLMARK_MYC_TARGETS_V2                63        Up 7.644478e-09 3.822239e-07
@@ -1534,12 +1596,12 @@ More details
 ## HALLMARK_ALLOGRAFT_REJECTION          212        Up 1.183176e-01 6.573201e-01
 ## HALLMARK_MTORC1_SIGNALING             263        Up 2.026148e-01 8.652915e-01</code></pre>
 <p>Let’s see if there are any MYC signalling pathways in MsigDB C2 collection. We can do this with the <code>grep</code> command on the names of the gene sets.</p>
-<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"MYC_"</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">c2.ind</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1]  462  510  587 1327 1328 1518 1519 1753 1754 1755 1756 1896 1897 1902 1903
 ## [16] 2129 2130 2200 2201 2294 2302 2312 2319 2362 2378 2390 2400 2410 2423 2462
 ## [31] 2500 2968 3053 3451 3566 3567 3818 3819 3820 3821 4029 4030 4209</code></pre>
-<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb164"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Let's save these so that we can subset c2.ind to test all gene sets with MYC in the name</span>
 <span class="va">myc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"MYC_"</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">c2.ind</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># What are these pathways called?</span>
@@ -1588,227 +1650,228 @@ More details
 ## [42] "ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_DN"
 ## [43] "ALFANO_MYC_TARGETS"</code></pre>
 <p>Let’s use ROAST to see if these MYC related gene sets tend to be differentially expressed. Note that the syntax for <code>camera</code> and <code>roast</code> is almost identical.</p>
-<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb166"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">myc.rst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/limma/man/roast.html">roast</a></span><span class="op">(</span><span class="va">v</span>,index<span class="op">=</span><span class="va">c2.ind</span><span class="op">[</span><span class="va">myc</span><span class="op">]</span>,design<span class="op">=</span><span class="va">design</span>,contrast<span class="op">=</span><span class="va">cont.matrix</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,nrot<span class="op">=</span><span class="fl">999</span><span class="op">)</span>
 <span class="va">myc.rst</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,<span class="op">]</span></code></pre></div>
 <pre><code>##                                                 NGenes   PropDown    PropUp
-## DANG_MYC_TARGETS_UP                                159 0.11949686 0.7106918
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                   28 0.07142857 0.6785714
-## DANG_REGULATED_BY_MYC_UP                            89 0.12359551 0.6741573
-## LEE_LIVER_CANCER_MYC_UP                             59 0.28813559 0.5084746
-## BILD_MYC_ONCOGENIC_SIGNATURE                       286 0.27622378 0.4650350
-## BENPORATH_MYC_TARGETS_WITH_EBOX                    291 0.23024055 0.4295533
-## ELLWOOD_MYC_TARGETS_UP                              19 0.10526316 0.3157895
 ## COLLER_MYC_TARGETS_UP                               26 0.07692308 0.7692308
+## DANG_MYC_TARGETS_UP                                159 0.11949686 0.7106918
+## SCHUHMACHER_MYC_TARGETS_UP                          99 0.12121212 0.6868687
+## DANG_REGULATED_BY_MYC_UP                            89 0.12359551 0.6741573
 ## PID_MYC_ACTIV_PATHWAY                              101 0.15841584 0.6237624
 ## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP         64 0.14062500 0.5781250
 ## KIM_MYC_AMPLIFICATION_TARGETS_UP                   227 0.16740088 0.4977974
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                   24 0.45833333 0.2083333
+## BILD_MYC_ONCOGENIC_SIGNATURE                       286 0.27622378 0.4650350
+## BENPORATH_MYC_TARGETS_WITH_EBOX                    291 0.23024055 0.4295533
+## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_DN    136 0.36029412 0.2132353
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN         57 0.08771930 0.7543860
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                   28 0.07142857 0.6785714
+## SCHLOSSER_MYC_TARGETS_REPRESSED_BY_SERUM           191 0.12565445 0.6020942
 ## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP    101 0.18811881 0.4059406
-## YU_MYC_TARGETS_UP                                   47 0.06382979 0.7446809
-## KIM_MYC_AMPLIFICATION_TARGETS_DN                   164 0.39634146 0.2195122
-##                                                 Direction PValue         FDR
-## DANG_MYC_TARGETS_UP                                    Up  0.001 0.003071429
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                      Up  0.001 0.003071429
-## DANG_REGULATED_BY_MYC_UP                               Up  0.001 0.003071429
-## LEE_LIVER_CANCER_MYC_UP                                Up  0.001 0.003071429
-## BILD_MYC_ONCOGENIC_SIGNATURE                           Up  0.001 0.003071429
-## BENPORATH_MYC_TARGETS_WITH_EBOX                        Up  0.001 0.003071429
-## ELLWOOD_MYC_TARGETS_UP                                 Up  0.001 0.003071429
-## COLLER_MYC_TARGETS_UP                                  Up  0.002 0.004961538
-## PID_MYC_ACTIV_PATHWAY                                  Up  0.002 0.004961538
-## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP            Up  0.002 0.004961538
-## KIM_MYC_AMPLIFICATION_TARGETS_UP                       Up  0.002 0.004961538
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                    Down  0.002 0.004961538
-## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP        Up  0.002 0.004961538
-## YU_MYC_TARGETS_UP                                      Up  0.003 0.006718750
-## KIM_MYC_AMPLIFICATION_TARGETS_DN                     Down  0.003 0.006718750
+## ELLWOOD_MYC_TARGETS_UP                              19 0.10526316 0.3157895
+##                                                 Direction PValue     FDR
+## COLLER_MYC_TARGETS_UP                                  Up  0.001 0.00215
+## DANG_MYC_TARGETS_UP                                    Up  0.001 0.00215
+## SCHUHMACHER_MYC_TARGETS_UP                             Up  0.001 0.00215
+## DANG_REGULATED_BY_MYC_UP                               Up  0.001 0.00215
+## PID_MYC_ACTIV_PATHWAY                                  Up  0.001 0.00215
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP            Up  0.001 0.00215
+## KIM_MYC_AMPLIFICATION_TARGETS_UP                       Up  0.001 0.00215
+## BILD_MYC_ONCOGENIC_SIGNATURE                           Up  0.001 0.00215
+## BENPORATH_MYC_TARGETS_WITH_EBOX                        Up  0.001 0.00215
+## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_DN      Down  0.001 0.00215
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN            Up  0.002 0.00430
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                      Up  0.002 0.00430
+## SCHLOSSER_MYC_TARGETS_REPRESSED_BY_SERUM               Up  0.002 0.00430
+## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP        Up  0.002 0.00430
+## ELLWOOD_MYC_TARGETS_UP                                 Up  0.002 0.00430
 ##                                                 PValue.Mixed FDR.Mixed
+## COLLER_MYC_TARGETS_UP                                  0.001     0.001
 ## DANG_MYC_TARGETS_UP                                    0.001     0.001
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                      0.001     0.001
+## SCHUHMACHER_MYC_TARGETS_UP                             0.001     0.001
 ## DANG_REGULATED_BY_MYC_UP                               0.001     0.001
-## LEE_LIVER_CANCER_MYC_UP                                0.001     0.001
+## PID_MYC_ACTIV_PATHWAY                                  0.001     0.001
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP            0.001     0.001
+## KIM_MYC_AMPLIFICATION_TARGETS_UP                       0.001     0.001
 ## BILD_MYC_ONCOGENIC_SIGNATURE                           0.001     0.001
 ## BENPORATH_MYC_TARGETS_WITH_EBOX                        0.001     0.001
-## ELLWOOD_MYC_TARGETS_UP                                 0.001     0.001
-## COLLER_MYC_TARGETS_UP                                  0.002     0.002
-## PID_MYC_ACTIV_PATHWAY                                  0.002     0.002
-## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP            0.002     0.002
-## KIM_MYC_AMPLIFICATION_TARGETS_UP                       0.001     0.001
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                      0.001     0.001
-## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP        0.002     0.002
-## YU_MYC_TARGETS_UP                                      0.002     0.002
-## KIM_MYC_AMPLIFICATION_TARGETS_DN                       0.001     0.001</code></pre>
+## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_DN        0.001     0.001
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN            0.002     0.002
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                      0.001     0.001
+## SCHLOSSER_MYC_TARGETS_REPRESSED_BY_SERUM               0.001     0.001
+## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP        0.001     0.001
+## ELLWOOD_MYC_TARGETS_UP                                 0.003     0.003</code></pre>
 <p>Each row corresponds to a single gene set. The NGenes column gives the number of genes in each set. The PropDown and PropUp columns contain the proportions of genes in the set that are down- and up-regulated, respectively, with absolute fold changes greater than 2. The net direction of change is determined from the significance of changes in each direction, and is shown in the Direction column. The PValue provides evidence for whether the majority of genes in the set are DE in the specified direction, whereas the PValue.Mixed tests for differential expression in any direction. FDRs are computed from the corresponding p-values across all sets.</p>
-<blockquote>
-<h3 id="challenge-11" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <ol style="list-style-type: decimal">
 <li>Test whether the MYC signalling pathways tend to be differentially expressed between luminal pregnant vs lactating (the second contrast).</li>
 <li>Look for gene sets containing “WNT” in the name and see whether they tend to be differentially expressed in basal pregnant vs lactating.</li>
 </ol>
-</blockquote>
-<details><summary><strong>Solution</strong>
-</summary><pre><code>##                                     NGenes  PropDown    PropUp Direction PValue
-## ODONNELL_TARGETS_OF_MYC_AND_TFRC_DN     54 0.6481481 0.1481481      Down  0.001
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><pre class="solution"><code>##                                     NGenes  PropDown    PropUp Direction PValue
+## DANG_MYC_TARGETS_DN                     43 0.2325581 0.5813953        Up  0.001
 ## PID_MYC_PATHWAY                         35 0.2000000 0.5428571        Up  0.001
 ## ELLWOOD_MYC_TARGETS_DN                  61 0.5409836 0.2622951      Down  0.001
 ## BENPORATH_MYC_TARGETS_WITH_EBOX        291 0.3024055 0.4329897        Up  0.001
 ## BILD_MYC_ONCOGENIC_SIGNATURE           286 0.2902098 0.4195804        Up  0.001
 ## PID_MYC_REPRESS_PATHWAY                 93 0.2150538 0.3978495        Up  0.001
 ## ELLWOOD_MYC_TARGETS_UP                  19 0.2105263 0.3684211        Up  0.001
-## LEE_LIVER_CANCER_MYC_TGFA_DN            63 0.3650794 0.3492063      Down  0.001
-## DANG_MYC_TARGETS_DN                     43 0.2325581 0.5813953        Up  0.003
-## ODONNELL_TARGETS_OF_MYC_AND_TFRC_UP    137 0.3576642 0.2262774      Down  0.003
-## ALFANO_MYC_TARGETS                     365 0.2794521 0.4027397        Up  0.004
-## YU_MYC_TARGETS_UP                       47 0.7021277 0.1063830      Down  0.007
-## SCHUHMACHER_MYC_TARGETS_UP              99 0.4646465 0.3131313      Down  0.008
-## PID_MYC_ACTIV_PATHWAY                  101 0.2970297 0.4158416        Up  0.013
-## DANG_REGULATED_BY_MYC_DN               343 0.2565598 0.4169096        Up  0.015
-##                                            FDR PValue.Mixed FDR.Mixed
-## ODONNELL_TARGETS_OF_MYC_AND_TFRC_DN 0.00268750        0.001     0.001
-## PID_MYC_PATHWAY                     0.00268750        0.001     0.001
-## ELLWOOD_MYC_TARGETS_DN              0.00268750        0.001     0.001
-## BENPORATH_MYC_TARGETS_WITH_EBOX     0.00268750        0.001     0.001
-## BILD_MYC_ONCOGENIC_SIGNATURE        0.00268750        0.001     0.001
-## PID_MYC_REPRESS_PATHWAY             0.00268750        0.001     0.001
-## ELLWOOD_MYC_TARGETS_UP              0.00268750        0.001     0.001
-## LEE_LIVER_CANCER_MYC_TGFA_DN        0.00268750        0.001     0.001
-## DANG_MYC_TARGETS_DN                 0.01075000        0.001     0.001
-## ODONNELL_TARGETS_OF_MYC_AND_TFRC_UP 0.01075000        0.001     0.001
-## ALFANO_MYC_TARGETS                  0.01368182        0.001     0.001
-## YU_MYC_TARGETS_UP                   0.02329167        0.003     0.003
-## SCHUHMACHER_MYC_TARGETS_UP          0.02480769        0.001     0.001
-## PID_MYC_ACTIV_PATHWAY               0.03839286        0.001     0.001
-## DANG_REGULATED_BY_MYC_DN            0.04156667        0.001     0.001</code></pre>
-<pre><code>##                                                                                   NGenes
+## YU_MYC_TARGETS_UP                       47 0.7021277 0.1063830      Down  0.002
+## LEE_LIVER_CANCER_MYC_TGFA_DN            63 0.3650794 0.3492063      Down  0.003
+## ODONNELL_TARGETS_OF_MYC_AND_TFRC_DN     54 0.6481481 0.1481481      Down  0.004
+## ODONNELL_TARGETS_OF_MYC_AND_TFRC_UP    137 0.3576642 0.2262774      Down  0.004
+## ALFANO_MYC_TARGETS                     365 0.2794521 0.4027397        Up  0.005
+## SCHUHMACHER_MYC_TARGETS_UP              99 0.4646465 0.3131313      Down  0.013
+## DANG_REGULATED_BY_MYC_DN               343 0.2565598 0.4169096        Up  0.014
+## PID_MYC_ACTIV_PATHWAY                  101 0.2970297 0.4158416        Up  0.019
+##                                             FDR PValue.Mixed FDR.Mixed
+## DANG_MYC_TARGETS_DN                 0.003071429        0.001     0.001
+## PID_MYC_PATHWAY                     0.003071429        0.001     0.001
+## ELLWOOD_MYC_TARGETS_DN              0.003071429        0.001     0.001
+## BENPORATH_MYC_TARGETS_WITH_EBOX     0.003071429        0.001     0.001
+## BILD_MYC_ONCOGENIC_SIGNATURE        0.003071429        0.001     0.001
+## PID_MYC_REPRESS_PATHWAY             0.003071429        0.001     0.001
+## ELLWOOD_MYC_TARGETS_UP              0.003071429        0.001     0.001
+## YU_MYC_TARGETS_UP                   0.008062500        0.001     0.001
+## LEE_LIVER_CANCER_MYC_TGFA_DN        0.011944444        0.001     0.001
+## ODONNELL_TARGETS_OF_MYC_AND_TFRC_DN 0.013681818        0.001     0.001
+## ODONNELL_TARGETS_OF_MYC_AND_TFRC_UP 0.013681818        0.001     0.001
+## ALFANO_MYC_TARGETS                  0.016125000        0.001     0.001
+## SCHUHMACHER_MYC_TARGETS_UP          0.041346154        0.001     0.001
+## DANG_REGULATED_BY_MYC_DN            0.041464286        0.001     0.001
+## PID_MYC_ACTIV_PATHWAY               0.053033333        0.001     0.001</code></pre>
+<pre class="solution"><code>##                                                                                   NGenes
+## PID_WNT_CANONICAL_PATHWAY                                                             29
 ## PID_WNT_NONCANONICAL_PATHWAY                                                          47
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                        91
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                               16
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING              6
-## PID_WNT_CANONICAL_PATHWAY                                                             29
 ## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                    11
 ## KEGG_WNT_SIGNALING_PATHWAY                                                           151
 ## BIOCARTA_WNT_PATHWAY                                                                  41
 ## WILLERT_WNT_SIGNALING                                                                 38
-## PID_WNT_SIGNALING_PATHWAY                                                             29
 ## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                                   39
+## PID_WNT_SIGNALING_PATHWAY                                                             29
 ## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                                9
 ## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                        18
 ## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                                  227
 ## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS     18
 ##                                                                                    PropDown
+## PID_WNT_CANONICAL_PATHWAY                                                         0.4482759
 ## PID_WNT_NONCANONICAL_PATHWAY                                                      0.4255319
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                    0.2087912
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                           0.2500000
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING         0.1666667
-## PID_WNT_CANONICAL_PATHWAY                                                         0.4482759
 ## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                0.4545455
 ## KEGG_WNT_SIGNALING_PATHWAY                                                        0.3642384
 ## BIOCARTA_WNT_PATHWAY                                                              0.2926829
 ## WILLERT_WNT_SIGNALING                                                             0.2631579
-## PID_WNT_SIGNALING_PATHWAY                                                         0.2758621
 ## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                               0.4102564
+## PID_WNT_SIGNALING_PATHWAY                                                         0.2758621
 ## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                           0.2222222
 ## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                    0.3888889
 ## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                               0.3083700
 ## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS 0.3888889
 ##                                                                                       PropUp
+## PID_WNT_CANONICAL_PATHWAY                                                         0.13793103
 ## PID_WNT_NONCANONICAL_PATHWAY                                                      0.14893617
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                    0.38461538
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                           0.62500000
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING         0.50000000
-## PID_WNT_CANONICAL_PATHWAY                                                         0.13793103
 ## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                0.09090909
 ## KEGG_WNT_SIGNALING_PATHWAY                                                        0.24503311
 ## BIOCARTA_WNT_PATHWAY                                                              0.36585366
 ## WILLERT_WNT_SIGNALING                                                             0.47368421
-## PID_WNT_SIGNALING_PATHWAY                                                         0.31034483
 ## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                               0.25641026
+## PID_WNT_SIGNALING_PATHWAY                                                         0.31034483
 ## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                           0.33333333
 ## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                    0.22222222
 ## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                               0.33039648
 ## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS 0.33333333
 ##                                                                                   Direction
+## PID_WNT_CANONICAL_PATHWAY                                                              Down
 ## PID_WNT_NONCANONICAL_PATHWAY                                                           Down
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                           Up
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                                  Up
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING                Up
-## PID_WNT_CANONICAL_PATHWAY                                                              Down
 ## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                     Down
 ## KEGG_WNT_SIGNALING_PATHWAY                                                             Down
 ## BIOCARTA_WNT_PATHWAY                                                                     Up
 ## WILLERT_WNT_SIGNALING                                                                    Up
-## PID_WNT_SIGNALING_PATHWAY                                                                Up
 ## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                                    Down
+## PID_WNT_SIGNALING_PATHWAY                                                                Up
 ## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                                  Up
 ## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                         Down
 ## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                                      Up
 ## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS        Up
 ##                                                                                   PValue
+## PID_WNT_CANONICAL_PATHWAY                                                          0.001
 ## PID_WNT_NONCANONICAL_PATHWAY                                                       0.001
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                     0.001
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                            0.002
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING          0.002
-## PID_WNT_CANONICAL_PATHWAY                                                          0.002
-## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                 0.014
-## KEGG_WNT_SIGNALING_PATHWAY                                                         0.017
-## BIOCARTA_WNT_PATHWAY                                                               0.020
-## WILLERT_WNT_SIGNALING                                                              0.031
-## PID_WNT_SIGNALING_PATHWAY                                                          0.041
-## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                                0.061
-## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                            0.100
-## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                     0.218
-## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                                0.244
-## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS  0.302
-##                                                                                          FDR
-## PID_WNT_NONCANONICAL_PATHWAY                                                      0.00550000
-## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                    0.00550000
-## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                           0.00660000
-## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING         0.00660000
-## PID_WNT_CANONICAL_PATHWAY                                                         0.00660000
-## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                0.04950000
-## KEGG_WNT_SIGNALING_PATHWAY                                                        0.05185714
-## BIOCARTA_WNT_PATHWAY                                                              0.05362500
-## WILLERT_WNT_SIGNALING                                                             0.07455556
-## PID_WNT_SIGNALING_PATHWAY                                                         0.08910000
-## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                               0.12100000
-## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                           0.18241667
-## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                    0.36807692
-## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                               0.38264286
-## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS 0.44220000
+## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                 0.012
+## KEGG_WNT_SIGNALING_PATHWAY                                                         0.013
+## BIOCARTA_WNT_PATHWAY                                                               0.017
+## WILLERT_WNT_SIGNALING                                                              0.028
+## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                                0.055
+## PID_WNT_SIGNALING_PATHWAY                                                          0.065
+## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                            0.098
+## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                     0.225
+## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                                0.263
+## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS  0.318
+##                                                                                           FDR
+## PID_WNT_CANONICAL_PATHWAY                                                         0.003666667
+## PID_WNT_NONCANONICAL_PATHWAY                                                      0.003666667
+## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                    0.003666667
+## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                           0.006600000
+## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING         0.006600000
+## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                0.039285714
+## KEGG_WNT_SIGNALING_PATHWAY                                                        0.039285714
+## BIOCARTA_WNT_PATHWAY                                                              0.045375000
+## WILLERT_WNT_SIGNALING                                                             0.067222222
+## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                               0.119900000
+## PID_WNT_SIGNALING_PATHWAY                                                         0.129000000
+## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                           0.178750000
+## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                    0.379923077
+## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                               0.412500000
+## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS 0.465666667
 ##                                                                                   PValue.Mixed
+## PID_WNT_CANONICAL_PATHWAY                                                                0.001
 ## PID_WNT_NONCANONICAL_PATHWAY                                                             0.001
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                           0.001
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                                  0.001
-## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING                0.003
-## PID_WNT_CANONICAL_PATHWAY                                                                0.002
-## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                       0.011
+## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING                0.002
+## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                       0.010
 ## KEGG_WNT_SIGNALING_PATHWAY                                                               0.001
 ## BIOCARTA_WNT_PATHWAY                                                                     0.001
 ## WILLERT_WNT_SIGNALING                                                                    0.001
-## PID_WNT_SIGNALING_PATHWAY                                                                0.001
 ## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                                      0.001
-## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                                  0.009
+## PID_WNT_SIGNALING_PATHWAY                                                                0.001
+## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                                  0.012
 ## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                           0.001
 ## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                                      0.001
 ## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS        0.001
 ##                                                                                   FDR.Mixed
+## PID_WNT_CANONICAL_PATHWAY                                                             0.001
 ## PID_WNT_NONCANONICAL_PATHWAY                                                          0.001
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                        0.001
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                               0.001
-## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING             0.003
-## PID_WNT_CANONICAL_PATHWAY                                                             0.002
-## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                    0.011
+## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING             0.002
+## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                    0.010
 ## KEGG_WNT_SIGNALING_PATHWAY                                                            0.001
 ## BIOCARTA_WNT_PATHWAY                                                                  0.001
 ## WILLERT_WNT_SIGNALING                                                                 0.001
-## PID_WNT_SIGNALING_PATHWAY                                                             0.001
 ## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                                   0.001
-## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                               0.009
+## PID_WNT_SIGNALING_PATHWAY                                                             0.001
+## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                               0.012
 ## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                        0.001
 ## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                                   0.001
 ## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS     0.001</code></pre>
-</details><p>Notes</p>
+</details><p><br></p>
+<p>Notes</p>
 <ul>
 <li>A common application of ROAST is to use a set of DE genes that was defined from an analysis of an independent data set. ROAST can then determine whether similar changes are observed in the contrast of interest for the current data set.</li>
 <li>Even for GO-defined gene sets, goana and ROAST have different behaviours. In goana, the significance of differential expression for a GO term is determined relative to other DE genes that are not annotated with that term. In ROAST, only differential expression for the genes in the set are relevant to the significance of that set and its corresponding term. goana depends on a significance cutoff to choose DE genes, whereas ROAST does not require a cutoff and evaluates all genes in the set.</li>
@@ -1820,8 +1883,8 @@ More details
 <h2 class="hasAnchor">
 <a href="#visualising-gene-set-tests-barcode-and-enrichment-plots" class="anchor"></a>Visualising gene set tests: Barcode and enrichment plots</h2>
 <p>A barcode plot can be produced with the <code>barcodeplot</code> function to visualize the results for any particular set. To display a barcodeplot, we need to decide what statistics to use, usually we choose either logFC or t-statistics for the comparison of interest. We also need to make sure we give the statistics in the correct order, such that subsetting the statistics vector will give the genes for the gene set we’re interested in. The best way to do this is to work with the fit object directly. The <code>coefficients</code> slot contains the logFCs and the <code>t</code> slot contains the t-statistics.</p>
-<p>Let’s have a look at one of the top MYC related pathway in the ROAST test that you have already done, “DANG_REGULATED_BY_MYC_UP”.</p>
-<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
+<p>Let’s have a look at one of the top MYC related pathway in the ROAST test that you have already done, “DANG_REGULATED_BY_MYC_UP.”</p>
+<div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Have a look at the logFCs and t-statistics in fit.cont</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">fit.cont</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1] "coefficients"     "stdev.unscaled"   "sigma"            "df.residual"     
@@ -1830,7 +1893,7 @@ More details
 ## [13] "df.prior"         "s2.prior"         "var.prior"        "proportion"      
 ## [17] "s2.post"          "t"                "df.total"         "p.value"         
 ## [21] "lods"             "F"                "F.p.value"</code></pre>
-<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">fit.cont</span><span class="op">$</span><span class="va">coefficients</span><span class="op">)</span></code></pre></div>
 <pre><code>##         Contrasts
 ##          B.PregVsLac L.PregVsLac
@@ -1840,7 +1903,7 @@ More details
 ##   18777  -0.08505647  -0.4731888
 ##   21399   0.21912852   0.2839044
 ##   58175   1.49852621   1.4736067</code></pre>
-<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">fit.cont</span><span class="op">$</span><span class="va">t</span><span class="op">)</span></code></pre></div>
 <pre><code>##         Contrasts
 ##          B.PregVsLac L.PregVsLac
@@ -1850,33 +1913,33 @@ More details
 ##   18777   -0.7975228  -4.0746018
 ##   21399    2.1866392   2.5284968
 ##   58175    1.5788218   3.1387631</code></pre>
-<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># barcode plot with logFCs</span>
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/barcodeplot.html">barcodeplot</a></span><span class="op">(</span><span class="va">fit.cont</span><span class="op">$</span><span class="va">coeff</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, index<span class="op">=</span><span class="va">c2.ind</span><span class="op">[[</span><span class="st">"DANG_REGULATED_BY_MYC_UP"</span><span class="op">]</span><span class="op">]</span>, main<span class="op">=</span><span class="st">"LogFC: DANG_REGULATED_BY_MYC_UP"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/barcodeplots-1.png" width="700"></p>
-<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># barcode plot using t-statistics</span>
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/barcodeplot.html">barcodeplot</a></span><span class="op">(</span><span class="va">fit.cont</span><span class="op">$</span><span class="va">t</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, index<span class="op">=</span><span class="va">c2.ind</span><span class="op">[[</span><span class="st">"DANG_REGULATED_BY_MYC_UP"</span><span class="op">]</span><span class="op">]</span>, main<span class="op">=</span><span class="st">"T-statistic: DANG_REGULATED_BY_MYC_UP"</span><span class="op">)</span></code></pre></div>
 <p><img src="06-rnaseq-day1_files/figure-html/barcodeplots-2.png" width="700"></p>
 <p>Here, genes are represented by bars and are ranked from left to right by decreasing log-fold change or t-statistic. This forms the barcode-like pattern. The line above the barcode shows the relative local enrichment of the vertical bars in each part of the plot. The barcodeplot shows that the genes in this gene set tend to be up-regulated between pregnant and lactating in basal cells.</p>
-<blockquote>
-<h3 id="challenge-12" class="challenge">Challenge</h3>
+<div id="challenge">
+<p><i class="fas fa-pencil-alt"></i> <strong>Challenge</strong></p>
 <ol style="list-style-type: decimal">
 <li>Produce a barcodeplot for luminal pregnant vs lactating for this gene set. Does the pattern of enrichment look as strong?</li>
 <li>Choose one of the Wnt signalling pathways and produce a barcode plot for both comparisons.</li>
 <li>You can put two gene sets on one plot, for example a set that is up-regulated and one that is down-regulated, by adding a gene set to the <code>index2</code> argument. Produce a barcodeplot with two sets of your choosing.</li>
 </ol>
-</blockquote>
-<details><summary><strong>Solution</strong>
-</summary><img src="06-rnaseq-day1_files/figure-html/barcodeplots-solution-1.png" width="700"><img src="06-rnaseq-day1_files/figure-html/barcodeplots-solution-2.png" width="700"><img src="06-rnaseq-day1_files/figure-html/barcodeplots-solution-3.png" width="700"></details>
+</div>
+<details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
+</summary><img src="06-rnaseq-day1_files/figure-html/barcodeplots-solution-1.png" width="700"><img src="06-rnaseq-day1_files/figure-html/barcodeplots-solution-2.png" width="700"><img src="06-rnaseq-day1_files/figure-html/barcodeplots-solution-3.png" width="700"></details><p><br></p>
 </div>
 </div>
 <div id="record-package-versions" class="section level1">
 <h1 class="hasAnchor">
 <a href="#record-package-versions" class="anchor"></a>Record package versions</h1>
 <p>The session information describes the versions of R and of the packages that were used in the analysis. This is useful for record-keeping purposes, and ensures that an analysis can be reproduced even when the software is updated over time.</p>
-<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
@@ -1951,9 +2014,47 @@ More details
 ## [85] iterators_1.0.13            memoise_2.0.0              
 ## [87] ellipsis_0.3.1</code></pre>
 </div>
-<div id="references" class="section level1">
+<div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Fu2015" class="csl-entry">
+Fu, Nai Yang, Anne C Rios, Bhupinder Pal, Rina Soetanto, Aaron T L Lun, Kevin Liu, Tamara Beck, et al. 2015. <span>“<span class="nocase">EGF-mediated induction of Mcl-1 at the switch to lactation is essential for alveolar cell survival.</span>”</span> <em>Nature Cell Biology</em> 17 (4): 365–75. <a href="https://doi.org/10.1038/ncb3117">https://doi.org/10.1038/ncb3117</a>.
+</div>
+<div id="ref-Law2018" class="csl-entry">
+Law, Charity W., Monther Alhamdoosh, Shian Su, Xueyi Dong, Luyi Tian, Gordon K. Smyth, and Matthew E. Ritchie. 2018. <span>“<span>RNA</span>-Seq Analysis Is Easy as 1-2-3 with Limma, Glimma and <span class="nocase">edgeR</span>.”</span> <em>F1000Research</em> 5 (December): 1408. <a href="https://doi.org/10.12688/f1000research.9005.3">https://doi.org/10.12688/f1000research.9005.3</a>.
+</div>
+<div id="ref-Law2014" class="csl-entry">
+Law, Charity W, Yunshun Chen, Wei Shi, and Gordon K Smyth. 2014. <span>“<span class="nocase">Voom: precision weights unlock linear model analysis tools for RNA-seq read counts</span>.”</span> <em>Genome Biology</em> 15 (2): R29. <a href="https://doi.org/10.1186/gb-2014-15-2-r29">https://doi.org/10.1186/gb-2014-15-2-r29</a>.
+</div>
+<div id="ref-Liao2014" class="csl-entry">
+Liao, Yang, Gordon K Smyth, and Wei Shi. 2014. <span>“<span class="nocase">featureCounts: an efficient general purpose program for assigning sequence reads to genomic features.</span>”</span> <em>Bioinformatics (Oxford, England)</em> 30 (7): 923–30. <a href="https://doi.org/10.1093/bioinformatics/btt656">https://doi.org/10.1093/bioinformatics/btt656</a>.
+</div>
+<div id="ref-Lun2016" class="csl-entry">
+Lun, Aaron T L, Yunshun Chen, and Gordon K Smyth. 2016. <span>“<span class="nocase">It’s DE-licious: A Recipe for Differential Expression Analyses of RNA-seq Experiments Using Quasi-Likelihood Methods in edgeR.</span>”</span> <em>Methods in Molecular Biology (Clifton, N.J.)</em> 1418 (January): 391–416. <a href="https://doi.org/10.1007/978-1-4939-3578-9%5C_19">https://doi.org/10.1007/978-1-4939-3578-9\_19</a>.
+</div>
+<div id="ref-McCarthy2009" class="csl-entry">
+McCarthy, Davis J, and Gordon K Smyth. 2009. <span>“<span class="nocase">Testing significance relative to a fold-change threshold is a TREAT.</span>”</span> <em>Bioinformatics (Oxford, England)</em> 25 (6): 765–71. <a href="https://doi.org/10.1093/bioinformatics/btp053">https://doi.org/10.1093/bioinformatics/btp053</a>.
+</div>
+<div id="ref-Ritchie2015" class="csl-entry">
+Ritchie, M. E., B. Phipson, D. Wu, Y. Hu, C. W. Law, W. Shi, and G. K. Smyth. 2015. <span>“<span class="nocase">limma powers differential expression analyses for RNA-sequencing and microarray studies</span>.”</span> <em>Nucleic Acids Research</em>, January, gkv007–. <a href="https://doi.org/10.1093/nar/gkv007">https://doi.org/10.1093/nar/gkv007</a>.
+</div>
+<div id="ref-robinson2010edgeR" class="csl-entry">
+Robinson, M D, D J McCarthy, and G K Smyth. 2010. <span>“<span class="nocase">edgeR: a Bioconductor package for differential expression analysis of digital gene expression data</span>.”</span> <em>Bioinformatics</em> 26 (1): 139–40.
+</div>
+<div id="ref-robinson2010tmm" class="csl-entry">
+Robinson, Mark D, and Alicia Oshlack. 2010. <span>“<span class="nocase">A scaling normalization method for differential expression analysis of RNA-seq data</span>.”</span> <em>Genome Biology</em> 11 (3): R25. <a href="https://doi.org/10.1186/gb-2010-11-3-r25">https://doi.org/10.1186/gb-2010-11-3-r25</a>.
+</div>
+<div id="ref-Su2017" class="csl-entry">
+Su, Shian, Charity W Law, Casey Ah-Cann, Marie-Liesse Asselin-Labat, Marnie E Blewitt, and Matthew E Ritchie. 2017. <span>“Glimma: Interactive Graphics for Gene Expression Analysis.”</span> Edited by Bonnie Berger. <em>Bioinformatics</em> 33 (13): 2050–52. <a href="https://doi.org/10.1093/bioinformatics/btx094">https://doi.org/10.1093/bioinformatics/btx094</a>.
+</div>
+<div id="ref-wu2010roast" class="csl-entry">
+Wu, D, E Lim, F Vaillant, M L Asselin-Labat, J E Visvader, and G K Smyth. 2010. <span>“<span class="nocase">ROAST: rotation gene set tests for complex microarray experiments</span>.”</span> <em>Bioinformatics</em> 26 (17): 2176–82.
+</div>
+<div id="ref-wu2012camera" class="csl-entry">
+Wu, D, and G K Smyth. 2012. <span>“<span class="nocase">Camera: a competitive gene set test accounting for inter-gene correlation</span>.”</span> <em>Nucleic Acids Research</em> 40 (17): e133—–e133.
+</div>
+</div>
 </div>
   </div>
 
