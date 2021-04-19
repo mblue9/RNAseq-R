@@ -91,14 +91,15 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
-<hr>
-<p>layout: page title: RNAseq analysis in R —</p>
-<p>In this workshop, you will be learning how to analyse RNA-seq count data, using R. This will include reading the data into R, quality control and performing differential expression analysis and gene set testing, with a focus on the limma-voom analysis workflow. You will learn how to generate common plots for analysis and visualisation of gene expression data, such as boxplots and heatmaps. You will also be learning how alignment and counting of raw RNA-seq data can be performed in R. This workshop is aimed at biologists interested in learning how to perform differential expression analysis of RNA-seq data when reference genomes are available.</p>
-<blockquote>
-<h2 id="prerequisites" class="prereq">Prerequisites</h2>
-<p>Some basic R knowledge is assumed. If you are not familiar with the R statistical programming language we strongly encourage you to work through an introductory R course before attempting these materials. We recommend the Software Carpentry <a href="http://swcarpentry.github.io/r-novice-gapminder/">R for Reproducible Scientific Analysis</a> lessons up to and including vectorisation.</p>
-</blockquote>
+<div id="rnaseq-analysis-in-r" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#rnaseq-analysis-in-r" class="anchor"></a>RNAseq analysis in R</h1></div>
+<p>In this workshop, you will be learning how to analyse RNA-seq count data, using R. This will include importing the data into R, quality control and performing differential expression analysis and gene set testing, with a focus on the limma-voom analysis workflow. You will learn how to generate common plots for analysis and visualisation of gene expression data, such as boxplots and heatmaps. You will also be learning how alignment and counting of raw RNA-seq data can be performed in R. This workshop is aimed at biologists interested in learning how to perform differential expression analysis of RNA-seq data when reference genomes are available. It was first taught <a href="http://combine-australia.github.io/2016-05-11-RNAseq/">here</a>.</p>
+<div id="prerequisites" class="section level2">
+<h2 class="hasAnchor">
+<a href="#prerequisites" class="anchor"></a>Prerequisites</h2>
+<p>Some basic R knowledge is assumed. If you are not familiar with the R statistical programming language we strongly encourage you to work through an introductory R course before attempting these materials. We recommend the Software Carpentry <a href="http://swcarpentry.github.io/r-novice-gapminder/">R for Reproducible Scientific Analysis</a> lessons up to and including Subsetting Data. Links to these modules are listed under <strong>Supplementary lessons</strong> below.</p>
+</div>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
@@ -109,23 +110,23 @@
 </li>
 </ul>
 </div>
-<div id="rnaseq-anlaysis-in-r" class="section level2">
+<div id="rnaseq-analysis-in-r-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#rnaseq-anlaysis-in-r" class="anchor"></a>RNAseq anlaysis in R</h2>
+<a href="#rnaseq-analysis-in-r-1" class="anchor"></a>RNAseq analysis in R</h2>
 <ul>
-<li><a href="00-r-rstudio-intro.html">R for RNAseq</a></li>
-<li><a href="06-rnaseq-day1.html">Quality control, differential expression, and gene set testing</a></li>
+<li><a href="articles/00-r-rstudio-intro.html">R for RNAseq</a></li>
+<li><a href="articles/06-rnaseq-day1.html">Quality control, differential expression, and gene set testing</a></li>
 <li>
-<a href="08-applying-rnaseq.html">Applying RNAseq</a> (<a href="09-applying-rnaseq-solutions.html">solutions</a>)</li>
+<a href="articles/08-applying-rnaseq.html">Applying RNAseq</a> (<a href="articles/09-applying-rnaseq-solutions.html">solutions</a>)</li>
 </ul>
 <div id="lecture-slides" class="section level3">
 <h3 class="hasAnchor">
 <a href="#lecture-slides" class="anchor"></a>Lecture slides</h3>
 <ul>
-<li><a href="slides/RNASeq_basics.pdf">RNASeq basics</a></li>
-<li><a href="slides/RNASeq_filtering_qc.pdf">Filtering and QC</a></li>
-<li><a href="slides/Differential_Expression_Analysis.pdf">Differential expression</a></li>
-<li><a href="slides/Gene_set_testing.pdf">Gene set testing</a></li>
+<li><a href="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/COMBINE-Australia/RNAseq-R/gh-pages/slides/RNASeq_basics.pdf">RNASeq basics</a></li>
+<li><a href="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/COMBINE-Australia/RNAseq-R/gh-pages/slides/RNASeq_filtering_qc.pdf">Filtering and QC</a></li>
+<li><a href="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/COMBINE-Australia/RNAseq-R/gh-pages/slides/Differential_Expression_Analysis.pdf">Differential expression</a></li>
+<li><a href="https://docs.google.com/viewer?url=https://raw.githubusercontent.com/COMBINE-Australia/RNAseq-R/gh-pages/slides/Gene_set_testing.pdf">Gene set testing</a></li>
 </ul>
 </div>
 <div id="supplementary-lessons" class="section level3">
@@ -133,15 +134,16 @@
 <a href="#supplementary-lessons" class="anchor"></a>Supplementary lessons</h3>
 <p>Introductory R materials:</p>
 <ul>
-<li><a href="01-rstudio-intro.html">Project management with RStudio</a></li>
-<li><a href="02-seeking-help.html">Seeking help</a></li>
-<li><a href="03-data-structures-part1.html">Data structures</a></li>
-<li><a href="04-data-structures-part2.html">Data frames and reading in data</a></li>
-<li><a href="05-data-subsetting.html">Subsetting data</a></li>
+<li><a href="https://swcarpentry.github.io/r-novice-gapminder/01-rstudio-intro/index.html">Introduction to R and RStudio</a></li>
+<li><a href="https://swcarpentry.github.io/r-novice-gapminder/02-project-intro/index.html">Project Management With RStudio</a></li>
+<li><a href="https://swcarpentry.github.io/r-novice-gapminder/03-seeking-help/index.html">Seeking help</a></li>
+<li><a href="https://swcarpentry.github.io/r-novice-gapminder/04-data-structures-part1/index.html">Data Structures</a></li>
+<li><a href="https://swcarpentry.github.io/r-novice-gapminder/05-data-structures-part2/index.html">Exploring Data Frames</a></li>
+<li><a href="https://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/index.html">Subsetting Data</a></li>
 </ul>
 <p>Additional RNAseq materials:</p>
 <ul>
-<li><a href="07-rnaseq-day2.html">Alignment and feature counting</a></li>
+<li><a href="articles/07-rnaseq-day2.html">Alignment and feature counting</a></li>
 </ul>
 <p>Data: Mouse mammary data (fastq files): <a href="https://figshare.com/s/f5d63d8c265a05618137">https://figshare.com/s/f5d63d8c265a05618137</a></p>
 </div>
@@ -151,7 +153,7 @@
 <p><a href="https://www.bioconductor.org/help/">Bioconductor help</a><br><a href="https://www.biostars.org/">Biostars</a><br><a href="http://seqanswers.com/">SEQanswers</a></p>
 </div>
 </div>
-
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -170,12 +172,6 @@
 <li>
 <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
-</ul>
-</div>
-<div class="community">
-<h2>Community</h2>
-<ul class="list-unstyled">
-<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 </ul>
 </div>
 <div class="developers">
