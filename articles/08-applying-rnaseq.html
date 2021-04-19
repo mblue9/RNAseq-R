@@ -44,21 +44,24 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/06-rnaseq-day1.html">Workshop</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Applying RNA-seq
+    Workshop
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/08-applying-rnaseq.html">Challenge</a>
+      <a href="../articles/00-r-rstudio-intro.html">R for RNA-seq</a>
     </li>
     <li>
-      <a href="../articles/09-applying-rnaseq-solutions.html">Solutions</a>
+      <a href="../articles/06-rnaseq-day1.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="../articles/08-applying-rnaseq.html">Applying RNA-seq - Challenge</a>
+    </li>
+    <li>
+      <a href="../articles/09-applying-rnaseq-solutions.html">Applying RNA-seq - Solutions</a>
     </li>
   </ul>
 </li>
@@ -101,15 +104,14 @@
 
     
     
-<p><strong>Author: Belinda Phipson and Jovana Maksimovic</strong></p>
 <div id="data-files-needed" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-files-needed" class="anchor"></a>Data files needed</h2>
 <ul>
-<li>counts_Drosophila.txt</li>
-<li>SampleInfo_Drosophila.txt</li>
+<li><a href="https://ndownloader.figshare.com/files/5999835?private_link=e08e71c42f118dbe8be6">counts_Drosophila.txt</a></li>
+<li><a href="https://ndownloader.figshare.com/files/5999838?private_link=e08e71c42f118dbe8be6">SampleInfo_Drosophila.txt</a></li>
 </ul>
-<p>Available from <a href="https://figshare.com/s/e08e71c42f118dbe8be6">https://figshare.com/s/e08e71c42f118dbe8be6</a></p>
+<p>Available from <a href="https://figshare.com/s/e08e71c42f118dbe8be6">Figshare</a>.</p>
 </div>
 <div id="libraries-needed" class="section level2">
 <h2 class="hasAnchor">
@@ -121,7 +123,7 @@
 <li>gplots</li>
 <li>RColorBrewer</li>
 </ul>
-<p><strong>If you have your own dataset, make sure you have a counts matrix and the sample information. You can look for the annotation package for the species you’re studying on the Bioconductor website.</strong> <a href="http://bioconductor.org/packages/3.3/BiocViews.html#___AnnotationData">http://bioconductor.org/packages/3.3/BiocViews.html#___AnnotationData</a> (Search for “org.” to see the organism packages)</p>
+<p><strong>If you have your own dataset, make sure you have a counts matrix and the sample information. You can look for the annotation package for the species you’re studying on the <a href="http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData">Bioconductor website</a>.</strong> (Search for “org.” to see the organism packages)</p>
 </div>
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">

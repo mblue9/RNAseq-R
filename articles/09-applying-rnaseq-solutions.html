@@ -44,21 +44,24 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/06-rnaseq-day1.html">Workshop</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Applying RNA-seq
+    Workshop
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/08-applying-rnaseq.html">Challenge</a>
+      <a href="../articles/00-r-rstudio-intro.html">R for RNA-seq</a>
     </li>
     <li>
-      <a href="../articles/09-applying-rnaseq-solutions.html">Solutions</a>
+      <a href="../articles/06-rnaseq-day1.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="../articles/08-applying-rnaseq.html">Applying RNA-seq - Challenge</a>
+    </li>
+    <li>
+      <a href="../articles/09-applying-rnaseq-solutions.html">Applying RNA-seq - Solutions</a>
     </li>
   </ul>
 </li>
@@ -93,7 +96,7 @@
             <h3 class="subtitle">Solutions: Analysis of Pasilla Knock-down Experiment in Drosophila</h3>
                         <h4 class="author">Belinda Phipson and Jovana Maksimovic</h4>
             
-            <h4 class="date">18 April 2021</h4>
+            <h4 class="date">19 April 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mblue9/RNAseq-R/blob/master/vignettes/09-applying-rnaseq-solutions.Rmd"><code>vignettes/09-applying-rnaseq-solutions.Rmd</code></a></small>
       <div class="hidden name"><code>09-applying-rnaseq-solutions.Rmd</code></div>
@@ -131,9 +134,9 @@
 <p>The reads were aligned to the Drosophila reference genome, downloaded from Ensembl, using the tophat aligner. The reads were summarised at the gene-level using htseq-count, a function from the tool HTSeq (<a href="http://wwwhuber.embl.de/users/anders/HTSeq/doc/overview.html" class="uri">http://wwwhuber.embl.de/users/anders/HTSeq/doc/overview.html</a>).</p>
 <p>For the purpose of today’s workshop, we will be analysing the gene level counts.</p>
 </div>
-<div id="reading-data-into-r" class="section level2">
+<div id="importing-the-data-into-r" class="section level2">
 <h2 class="hasAnchor">
-<a href="#reading-data-into-r" class="anchor"></a>Reading data into R</h2>
+<a href="#importing-the-data-into-r" class="anchor"></a>Importing the data into R</h2>
 <p>First, let’s load all the libraries we will need today.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioinf.wehi.edu.au/limma">limma</a></span><span class="op">)</span>
@@ -145,7 +148,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.delim</a></span><span class="op">(</span>file<span class="op">=</span><span class="st">"https://ndownloader.figshare.com/files/5999835?private_link=e08e71c42f118dbe8be6"</span><span class="op">)</span>
 <span class="va">sampleinfo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.delim</a></span><span class="op">(</span>file<span class="op">=</span><span class="st">"https://ndownloader.figshare.com/files/5999838?private_link=e08e71c42f118dbe8be6"</span>, stringsAsFactors <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>Check that the data has read in correctly</p>
+<p>Check that the data has benn imported correctly.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span></code></pre></div>
 <pre><code>##             SRR031714.bam SRR031716.bam SRR031724.bam SRR031726.bam
