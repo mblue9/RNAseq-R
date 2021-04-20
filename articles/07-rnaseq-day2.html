@@ -96,7 +96,7 @@
             <h3 class="subtitle">Alignment and feature counting</h3>
                         <h4 class="author">Maria Doyle, Harriet Dashnow, Belinda Phipson</h4>
             
-            <h4 class="date">19 April 2021</h4>
+            <h4 class="date">20 April 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mblue9/RNAseq-R/blob/master/vignettes/07-rnaseq-day2.Rmd"><code>vignettes/07-rnaseq-day2.Rmd</code></a></small>
       <div class="hidden name"><code>07-rnaseq-day2.Rmd</code></div>
@@ -254,18 +254,18 @@
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">?</span><span class="va">align</span></code></pre></div>
 <p>We can get a summary of the proportion of reads that mapped to the reference genome using the <code>propmapped</code> function.</p>
-<pre><code>##  [1] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552444.fastq.gz.subread.BAM"
-##  [2] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552445.fastq.gz.subread.BAM"
-##  [3] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552446.fastq.gz.subread.BAM"
-##  [4] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552447.fastq.gz.subread.BAM"
-##  [5] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552448.fastq.gz.subread.BAM"
-##  [6] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552449.fastq.gz.subread.BAM"
-##  [7] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552450.fastq.gz.subread.BAM"
-##  [8] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552451.fastq.gz.subread.BAM"
-##  [9] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552452.fastq.gz.subread.BAM"
-## [10] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552453.fastq.gz.subread.BAM"
-## [11] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552454.fastq.gz.subread.BAM"
-## [12] "/tmp/RtmpmgjDIx/temp_libpath28d763beb08/RNAseqRworkshop/extdata/data/SRR1552455.fastq.gz.subread.BAM"</code></pre>
+<pre><code>##  [1] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552444.fastq.gz.subread.BAM"
+##  [2] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552445.fastq.gz.subread.BAM"
+##  [3] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552446.fastq.gz.subread.BAM"
+##  [4] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552447.fastq.gz.subread.BAM"
+##  [5] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552448.fastq.gz.subread.BAM"
+##  [6] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552449.fastq.gz.subread.BAM"
+##  [7] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552450.fastq.gz.subread.BAM"
+##  [8] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552451.fastq.gz.subread.BAM"
+##  [9] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552452.fastq.gz.subread.BAM"
+## [10] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552453.fastq.gz.subread.BAM"
+## [11] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552454.fastq.gz.subread.BAM"
+## [12] "/tmp/RtmppTx83A/temp_libpath28d19329157/RNAseqRworkshop/extdata/data/SRR1552455.fastq.gz.subread.BAM"</code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bam.files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"./data"</span>, pattern <span class="op">=</span> <span class="st">".BAM$"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">bam.files</span></code></pre></div>
