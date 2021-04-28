@@ -114,6 +114,19 @@
 
     
     
+<div id="introduction" class="section level1">
+<h1 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h1>
+<p>This is where you can test applying the RNA-seq R analysis skills you have learned. There are some task given below. You could try on your own data or on the Drosophila dataset described below.</p>
+<div id="drosophila-dataset" class="section level2">
+<h2 class="hasAnchor">
+<a href="#drosophila-dataset" class="anchor"></a>Drosophila dataset</h2>
+<p>The RNA-Seq data we will be analysing today comes from this published paper:</p>
+<p>Brooks, A.N., Yang, L., Duff, M.O., Hansen, K.D., Park, J.W., Dudoit, S., Brenner, S.E. and Graveley, B.R. (2011) Conservation of an rna regulatory map between drosophila and mammals. Genome Research, 21(2), 193-202.<br><a href="http://www.ncbi.nlm.nih.gov/pubmed/20921232" class="uri">http://www.ncbi.nlm.nih.gov/pubmed/20921232</a></p>
+<p>This is a publicly available dataset, deposited in the Short Read Archive. The RNA-sequence data are available from GEO under accession nos. GSM461176-GSM461181. The authors combined RNAi and RNASeq to identify exons regulated by Pasilla, the Drosophila melanogaster ortholog of mammalian NOVA1 and NOVA2. They showed that the RNA regulatory map of Pasilla and NOVA1/2 is highly conserved between insects and mammals. NOVA1 and NOVA2 are best known for being involved in alternative splicing. Cells from S2-DRSC, which is an embryonic cell line, were cultured and subjected to a treatment in order to knock-down Pasilla. The four untreated and three treated RNAi samples were used in the analysis. The treated samples had Pasilla knocked down by approximately 60% compared to the untreated samples. Some of the samples had undergone paired end sequencing while other samples were sequenced from one end only.</p>
+<p>The reads were aligned to the Drosophila reference genome, downloaded from Ensembl, using the tophat aligner. The reads were summarised at the gene-level using htseq-count, a function from the tool <a href="http://wwwhuber.embl.de/users/anders/HTSeq/doc/overview.html">HTSeq</a>.</p>
+<p>For the purpose of today’s workshop, we will be analysing the gene level counts.</p>
+</div>
 <div id="data-files-needed" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-files-needed" class="anchor"></a>Data files needed</h2>
@@ -134,15 +147,6 @@
 <li>RColorBrewer</li>
 </ul>
 <p><strong>If you have your own dataset, make sure you have a counts matrix and the sample information. You can look for the annotation package for the species you’re studying on the <a href="http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData">Bioconductor website</a>.</strong> (Search for “org.” to see the organism packages)</p>
-</div>
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The RNA-Seq data we will be analysing today comes from this published paper:</p>
-<p>Brooks, A.N., Yang, L., Duff, M.O., Hansen, K.D., Park, J.W., Dudoit, S., Brenner, S.E. and Graveley, B.R. (2011) Conservation of an rna regulatory map between drosophila and mammals. Genome Research, 21(2), 193-202.<br><a href="http://www.ncbi.nlm.nih.gov/pubmed/20921232" class="uri">http://www.ncbi.nlm.nih.gov/pubmed/20921232</a></p>
-<p>This is a publicly available dataset, deposited in the Short Read Archive. The RNA-sequence data are available from GEO under accession nos. GSM461176-GSM461181. The authors combined RNAi and RNASeq to identify exons regulated by Pasilla, the Drosophila melanogaster ortholog of mammalian NOVA1 and NOVA2. They showed that the RNA regulatory map of Pasilla and NOVA1/2 is highly conserved between insects and mammals. NOVA1 and NOVA2 are best known for being involved in alternative splicing. Cells from S2-DRSC, which is an embryonic cell line, were cultured and subjected to a treatment in order to knock-down Pasilla. The four untreated and three treated RNAi samples were used in the analysis. The treated samples had Pasilla knocked down by approximately 60% compared to the untreated samples. Some of the samples had undergone paired end sequencing while other samples were sequenced from one end only.</p>
-<p>The reads were aligned to the Drosophila reference genome, downloaded from Ensembl, using the tophat aligner. The reads were summarised at the gene-level using htseq-count, a function from the tool <a href="http://wwwhuber.embl.de/users/anders/HTSeq/doc/overview.html">HTSeq</a>.</p>
-<p>For the purpose of today’s workshop, we will be analysing the gene level counts.</p>
 </div>
 <div id="tasks" class="section level2">
 <h2 class="hasAnchor">
@@ -183,6 +187,7 @@
 <li><p>Gene set testing with goana</p></li>
 <li><p>Try some interactive plots from Glimma and save the topTable output in a spreadsheet.</p></li>
 </ul>
+</div>
 </div>
   </div>
 

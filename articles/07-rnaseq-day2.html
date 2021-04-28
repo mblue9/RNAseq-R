@@ -117,7 +117,7 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Mapping reads to the genome is a very important task, and many different aligners are available, such as bowtie <span class="citation">(Langmead and Salzberg 2012)</span>, topHat <span class="citation">(Trapnell, Pachter, and Salzberg 2009)</span>, STAR <span class="citation">(Dobin et al. 2013)</span> and Rsubread <span class="citation">(Liao, Smyth, and Shi 2013)</span>. Rsubread is the only aligner that can run in R. Most mapping tasks require larger computers than an average laptop, so usually read mapping is done on a server in a Linux-like environment. However, for the purpose of this workshop, we will demonstrate how read alignment and counting can be performed using R. We will map a small subset of reads (1000) from each sample from our mouse lactation dataset <span class="citation">(Fu et al. 2015)</span>, and we will only be mapping to chromosome 1. This is so that everyone can have a go at alignment and counting on their laptops using RStudio.</p>
+<p>Mapping reads to the genome is a very important task, and many different aligners are available, such as bowtie <span class="citation">(Langmead and Salzberg 2012)</span>, topHat <span class="citation">(Trapnell, Pachter, and Salzberg 2009)</span>, STAR <span class="citation">(Dobin et al. 2013)</span> and Rsubread <span class="citation">(Liao, Smyth, and Shi 2013)</span>. Rsubread is the only aligner that can run in R. Most mapping tasks require larger computers than an average laptop, so usually read mapping is done on a server in a Linux-like environment. However, for the purpose of this workshop, we will demonstrate how read alignment and counting can be performed using R. We will map a small subset of reads (1000) from each sample from our mouse lactation dataset <span class="citation">(Fu et al. 2015)</span>, and we will only be mapping to chromosome 1. This is so that everyone can have a go at alignment and counting using R.</p>
 <div id="acknowledgements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#acknowledgements" class="anchor"></a>Acknowledgements</h2>
@@ -152,10 +152,9 @@
 <a href="#downloading-genome-files" class="anchor"></a>Downloading genome files</h2>
 <p>We have provided the index files for chromosome 1 for the mouse genome build mm10 for this workshop in order to save time on building the index. However, full genome fasta files for a number of different genomes are available to download from the UCSC genome browser, see <a href="http://hgdownload.soe.ucsc.edu/downloads.html" class="uri">http://hgdownload.soe.ucsc.edu/downloads.html</a>; from NCBI: <a href="http://www.ncbi.nlm.nih.gov/genome" class="uri">http://www.ncbi.nlm.nih.gov/genome</a>; or from ENSEMBL: <a href="http://asia.ensembl.org/info/data/ftp/index.html" class="uri">http://asia.ensembl.org/info/data/ftp/index.html</a>.</p>
 </div>
-</div>
-<div id="importing-the-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#importing-the-data" class="anchor"></a># Importing the data</h1>
+<div id="importing-the-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#importing-the-data" class="anchor"></a>Importing the data</h2>
 <p>First, let’s load the Rsubread package into R.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/Rsubread">Rsubread</a></span><span class="op">)</span></code></pre></div>
@@ -220,6 +219,7 @@
 ##  [7] "./data/SRR1552450.fastq.gz" "./data/SRR1552451.fastq.gz"
 ##  [9] "./data/SRR1552452.fastq.gz" "./data/SRR1552453.fastq.gz"
 ## [11] "./data/SRR1552454.fastq.gz" "./data/SRR1552455.fastq.gz"</code></pre>
+</div>
 <div id="alignment" class="section level2">
 <h2 class="hasAnchor">
 <a href="#alignment" class="anchor"></a>Alignment</h2>
