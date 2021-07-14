@@ -95,7 +95,7 @@ if (!requireNamespace("BiocManager"))
 BiocManager::install(c("limma", "edgeR", "Glimma", "org.Mm.eg.db", "BiasedUrn", "GO.db", "gplots", "RColorBrewer", "NMF"))
 ```
 
-# Importing the data
+# Setting up the data
 
 Set up an RStudio project `File > New Project`. Then open a new R script `File > New File > R Script` and copy the commands below.
 
