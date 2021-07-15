@@ -78,7 +78,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://mblue9.github.io/RNAseq-R">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -98,14 +98,14 @@
 
       
 
-      </header><script src="09-applying-rnaseq-solutions_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="09-applying-rnaseq-solutions_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>RNA-seq analysis in R</h1>
             <h3 class="subtitle">Solutions: Analysis of Pasilla Knock-down Experiment in Drosophila</h3>
                         <h4 class="author">Belinda Phipson and Jovana Maksimovic</h4>
             
-            <h4 class="date">07 May 2021</h4>
+            <h4 class="date">15 July 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mblue9/RNAseq-R/blob/master/vignettes/09-applying-rnaseq-solutions.Rmd"><code>vignettes/09-applying-rnaseq-solutions.Rmd</code></a></small>
       <div class="hidden name"><code>09-applying-rnaseq-solutions.Rmd</code></div>
@@ -398,9 +398,9 @@
 <code class="sourceCode R"><span class="fu">columns</span><span class="op">(</span><span class="va">org.Dm.eg.db</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT"  "ENSEMBLTRANS"
 ##  [6] "ENTREZID"     "ENZYME"       "EVIDENCE"     "EVIDENCEALL"  "FLYBASE"     
-## [11] "FLYBASECG"    "FLYBASEPROT"  "GENENAME"     "GO"           "GOALL"       
-## [16] "MAP"          "ONTOLOGY"     "ONTOLOGYALL"  "PATH"         "PMID"        
-## [21] "REFSEQ"       "SYMBOL"       "UNIGENE"      "UNIPROT"</code></pre>
+## [11] "FLYBASECG"    "FLYBASEPROT"  "GENENAME"     "GENETYPE"     "GO"          
+## [16] "GOALL"        "MAP"          "ONTOLOGY"     "ONTOLOGYALL"  "PATH"        
+## [21] "PMID"         "REFSEQ"       "SYMBOL"       "UNIPROT"</code></pre>
 <p>We definitely want gene symbols and perhaps the full gene name and Entrez id. Let’s build up our annotation information in a separate data frame using the <code>select</code> function. Note, by default, the <code>select</code> function assumes that the keys provided are Entrez ids. However, in this case we are using FlyBase ids as the keys. As such, we need to give the <code>select</code> function this information using the <code>keytype</code> argument which we will set to <code>"FLYBASE"</code>.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ann</span> <span class="op">&lt;-</span> <span class="fu">select</span><span class="op">(</span><span class="va">org.Dm.eg.db</span>,keys<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>,columns<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"FLYBASE"</span>,<span class="st">"ENTREZID"</span>,<span class="st">"SYMBOL"</span>,<span class="st">"GENENAME"</span><span class="op">)</span>,keytype<span class="op">=</span><span class="st">"FLYBASE"</span><span class="op">)</span></code></pre></div>
@@ -478,15 +478,15 @@
 ## [23] "org.Dm.egFLYBASE2EG"      "org.Dm.egFLYBASECG"      
 ## [25] "org.Dm.egFLYBASECG2EG"    "org.Dm.egFLYBASEPROT"    
 ## [27] "org.Dm.egFLYBASEPROT2EG"  "org.Dm.egGENENAME"       
-## [29] "org.Dm.egGO"              "org.Dm.egGO2ALLEGS"      
-## [31] "org.Dm.egGO2EG"           "org.Dm.egMAP"            
-## [33] "org.Dm.egMAP2EG"          "org.Dm.egMAPCOUNTS"      
-## [35] "org.Dm.egORGANISM"        "org.Dm.egPATH"           
-## [37] "org.Dm.egPATH2EG"         "org.Dm.egPMID"           
-## [39] "org.Dm.egPMID2EG"         "org.Dm.egREFSEQ"         
-## [41] "org.Dm.egREFSEQ2EG"       "org.Dm.egSYMBOL"         
-## [43] "org.Dm.egSYMBOL2EG"       "org.Dm.egUNIGENE"        
-## [45] "org.Dm.egUNIGENE2EG"      "org.Dm.egUNIPROT"</code></pre>
+## [29] "org.Dm.egGENETYPE"        "org.Dm.egGO"             
+## [31] "org.Dm.egGO2ALLEGS"       "org.Dm.egGO2EG"          
+## [33] "org.Dm.egMAP"             "org.Dm.egMAP2EG"         
+## [35] "org.Dm.egMAPCOUNTS"       "org.Dm.egORGANISM"       
+## [37] "org.Dm.egPATH"            "org.Dm.egPATH2EG"        
+## [39] "org.Dm.egPMID"            "org.Dm.egPMID2EG"        
+## [41] "org.Dm.egREFSEQ"          "org.Dm.egREFSEQ2EG"      
+## [43] "org.Dm.egSYMBOL"          "org.Dm.egSYMBOL2EG"      
+## [45] "org.Dm.egUNIPROT"</code></pre>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get annotation</span>
 <span class="va">fly</span> <span class="op">&lt;-</span> <span class="fu">toTable</span><span class="op">(</span><span class="va">org.Dm.egFLYBASE</span><span class="op">)</span>
@@ -663,22 +663,22 @@
 ## GO:0019991                  septate junction assembly  BP  29  0   12
 ## GO:0120192                    tight junction assembly  BP  31  0   12
 ## GO:0120193                tight junction organization  BP  31  0   12
-## GO:0005576                       extracellular region  CC 318 43   43
+## GO:0005576                       extracellular region  CC 295 41   41
+## GO:0005615                        extracellular space  CC 182 29   30
+## GO:0006006                  glucose metabolic process  BP  24  2   10
 ## GO:0043297                   apical junction assembly  BP  36  0   12
-## GO:0005615                        extracellular space  CC 181 29   29
 ## GO:0045216            cell-cell junction organization  BP  59  0   15
-## GO:0006006                  glucose metabolic process  BP  22  2    9
 ## GO:0060856       establishment of blood-brain barrier  BP  17  2    8
 ## GO:0060857 establishment of glial blood-brain barrier  BP  13  0    7
 ##                    P.Up       P.Down
 ## GO:0019991 1.000000e+00 2.835702e-08
 ## GO:0120192 1.000000e+00 6.926354e-08
 ## GO:0120193 1.000000e+00 6.926354e-08
-## GO:0005576 1.260580e-07 1.453207e-07
+## GO:0005576 1.178025e-07 1.351939e-07
+## GO:0005615 5.368607e-07 1.762857e-07
+## GO:0006006 4.110852e-01 3.905566e-07
 ## GO:0043297 1.000000e+00 4.698711e-07
-## GO:0005615 4.764942e-07 5.288276e-07
 ## GO:0045216 1.000000e+00 9.120552e-07
-## GO:0006006 3.690371e-01 1.835789e-06
 ## GO:0060856 2.598739e-01 1.940334e-06
 ## GO:0060857 1.000000e+00 2.797378e-06</code></pre>
 </div>

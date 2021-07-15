@@ -78,7 +78,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://mblue9.github.io/RNAseq-R">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -98,14 +98,14 @@
 
       
 
-      </header><script src="06-rnaseq-day1_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="06-rnaseq-day1_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>RNA-seq analysis in R</h1>
             <h3 class="subtitle">Differential expression analysis</h3>
                         <h4 class="author">Maria A Doyle, Harriet Dashnow, Jovana Maksimovic, Anna S Trigos, Shian Su, Charity W Law, Matthew E Ritchie, Belinda Phipson</h4>
             
-            <h4 class="date">07 May 2021</h4>
+            <h4 class="date">15 July 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mblue9/RNAseq-R/blob/master/vignettes/06-rnaseq-day1.Rmd"><code>vignettes/06-rnaseq-day1.Rmd</code></a></small>
       <div class="hidden name"><code>06-rnaseq-day1.Rmd</code></div>
@@ -192,9 +192,9 @@
 <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"limma"</span>, <span class="st">"edgeR"</span>, <span class="st">"Glimma"</span>, <span class="st">"org.Mm.eg.db"</span>, <span class="st">"BiasedUrn"</span>, <span class="st">"GO.db"</span>, <span class="st">"gplots"</span>, <span class="st">"RColorBrewer"</span>, <span class="st">"NMF"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="importing-the-data" class="section level1">
+<div id="setting-up-the-data" class="section level1">
 <h1 class="hasAnchor">
-<a href="#importing-the-data" class="anchor"></a>Importing the data</h1>
+<a href="#setting-up-the-data" class="anchor"></a>Setting up the data</h1>
 <p>Set up an RStudio project <code>File &gt; New Project</code>. Then open a new R script <code>File &gt; New File &gt; R Script</code> and copy the commands below.</p>
 <p>First, let’s load all the packages we will need to analyse the data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -515,9 +515,9 @@
 <code class="sourceCode R"><span class="fu">columns</span><span class="op">(</span><span class="va">org.Mm.eg.db</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT"  "ENSEMBLTRANS"
 ##  [6] "ENTREZID"     "ENZYME"       "EVIDENCE"     "EVIDENCEALL"  "GENENAME"    
-## [11] "GO"           "GOALL"        "IPI"          "MGI"          "ONTOLOGY"    
-## [16] "ONTOLOGYALL"  "PATH"         "PFAM"         "PMID"         "PROSITE"     
-## [21] "REFSEQ"       "SYMBOL"       "UNIGENE"      "UNIPROT"</code></pre>
+## [11] "GENETYPE"     "GO"           "GOALL"        "IPI"          "MGI"         
+## [16] "ONTOLOGY"     "ONTOLOGYALL"  "PATH"         "PFAM"         "PMID"        
+## [21] "PROSITE"      "REFSEQ"       "SYMBOL"       "UNIPROT"</code></pre>
 <p>We definitely want gene symbols and perhaps the full gene name. Let’s build up our annotation information in a separate data frame using the <code>select</code> function.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ann</span> <span class="op">&lt;-</span> <span class="fu">select</span><span class="op">(</span><span class="va">org.Mm.eg.db</span>,keys<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">counts</span><span class="op">)</span>,columns<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ENTREZID"</span>,<span class="st">"SYMBOL"</span>,<span class="st">"GENENAME"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -1464,27 +1464,27 @@ What is the second greatest source of variation in the data?</p>
 <code class="sourceCode R"><span class="va">go</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/limma/man/goana.html">goana</a></span><span class="op">(</span><span class="va">fit.cont</span>, coef<span class="op">=</span><span class="st">"B.PregVsLac"</span>,species <span class="op">=</span> <span class="st">"Mm"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/topGO.html">topGO</a></span><span class="op">(</span><span class="va">go</span>, n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                            Term Ont    N  Up Down         P.Up
-## GO:0022613 ribonucleoprotein complex biogenesis  BP  398 196   25 1.913118e-50
-## GO:0042254                  ribosome biogenesis  BP  290 155   12 8.927292e-46
-## GO:1990904            ribonucleoprotein complex  CC  659 261   48 1.594455e-44
-## GO:0022626                   cytosolic ribosome  CC  102  75    2 4.361513e-36
-## GO:0006364                      rRNA processing  BP  204 112    4 9.206303e-35
-## GO:0016072               rRNA metabolic process  BP  211 113    6 1.021692e-33
-## GO:0003723                          RNA binding  MF 1012 320  109 1.269701e-31
-## GO:0034470                     ncRNA processing  BP  351 145   18 3.695632e-27
-## GO:0005840                             ribosome  CC  214 104    6 1.479315e-26
-## GO:0022625    cytosolic large ribosomal subunit  CC   52  44    0 2.739381e-26
-##               P.Down
-## GO:0022613 1.0000000
-## GO:0042254 1.0000000
-## GO:1990904 1.0000000
-## GO:0022626 0.9999999
-## GO:0006364 1.0000000
-## GO:0016072 1.0000000
-## GO:0003723 1.0000000
-## GO:0034470 1.0000000
-## GO:0005840 1.0000000
-## GO:0022625 1.0000000</code></pre>
+## GO:0022613 ribonucleoprotein complex biogenesis  BP  397 195   26 6.018708e-50
+## GO:0042254                  ribosome biogenesis  BP  288 154   12 1.674019e-45
+## GO:1990904            ribonucleoprotein complex  CC  660 261   48 2.321948e-44
+## GO:0022626                   cytosolic ribosome  CC   99  74    1 1.942494e-36
+## GO:0006364                      rRNA processing  BP  205 113    4 2.846012e-35
+## GO:0016072               rRNA metabolic process  BP  212 114    6 3.237354e-34
+## GO:0003723                          RNA binding  MF 1019 323  110 3.982731e-32
+## GO:0005840                             ribosome  CC  211 104    5 3.480761e-27
+## GO:0034470                     ncRNA processing  BP  351 145   18 3.796803e-27
+## GO:0006396                       RNA processing  BP  815 261   74 1.141355e-26
+##            P.Down
+## GO:0022613      1
+## GO:0042254      1
+## GO:1990904      1
+## GO:0022626      1
+## GO:0006364      1
+## GO:0016072      1
+## GO:0003723      1
+## GO:0005840      1
+## GO:0034470      1
+## GO:0006396      1</code></pre>
 <p>The row names of the output are the universal identifiers of the GO terms, with one term per row. The Term column gives the names of the GO terms. These terms cover three domains - biological process (BP), cellular component (CC) and molecular function (MF), as shown in the Ont column. The N column represents the total number of genes that are annotated with each GO term. The Up and Down columns represent the number of differentially expressed genes that overlap with the genes in the GO term. The P.Up and P.Down columns contain the p-values for over-representation of the GO term across the set of up- and down-regulated genes, respectively. The output table is sorted by the minimum of P.Up and P.Down by default.</p>
 <p>An additional refinement is to supply <code>goana</code> with the gene lengths using the <code>covariate</code> argument. In the original data matrix that we loaded into R, there is a column called “Length.”</p>
 <div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
@@ -1508,21 +1508,21 @@ What is the second greatest source of variation in the data?</p>
                    covariate<span class="op">=</span><span class="va">gene_length</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/limma/man/topGO.html">topGO</a></span><span class="op">(</span><span class="va">go_length</span>, n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                            Term Ont    N  Up Down         P.Up
-## GO:0022613 ribonucleoprotein complex biogenesis  BP  398 196   25 2.329797e-52
-## GO:0042254                  ribosome biogenesis  BP  290 155   12 2.649314e-48
-## GO:1990904            ribonucleoprotein complex  CC  659 261   48 1.248381e-47
-## GO:0022626                   cytosolic ribosome  CC  102  75    2 7.020502e-40
-## GO:0006364                      rRNA processing  BP  204 112    4 1.430811e-36
-## GO:0016072               rRNA metabolic process  BP  211 113    6 2.150090e-35
-## GO:0003723                          RNA binding  MF 1012 320  109 1.117780e-31
-## GO:0005840                             ribosome  CC  214 104    6 9.362522e-31
-## GO:0003735   structural constituent of ribosome  MF  147  81    2 8.302045e-30
-## GO:0044391                    ribosomal subunit  CC  182  92    2 1.510361e-29
+## GO:0022613 ribonucleoprotein complex biogenesis  BP  397 195   26 8.462978e-52
+## GO:0042254                  ribosome biogenesis  BP  288 154   12 5.248049e-48
+## GO:1990904            ribonucleoprotein complex  CC  660 261   48 2.065394e-47
+## GO:0022626                   cytosolic ribosome  CC   99  74    1 2.429737e-40
+## GO:0006364                      rRNA processing  BP  205 113    4 4.003684e-37
+## GO:0016072               rRNA metabolic process  BP  212 114    6 6.190584e-36
+## GO:0003723                          RNA binding  MF 1019 323  110 3.618595e-32
+## GO:0005840                             ribosome  CC  211 104    5 1.724006e-31
+## GO:0003735   structural constituent of ribosome  MF  147  81    2 8.376154e-30
+## GO:0044391                    ribosomal subunit  CC  182  92    2 1.525987e-29
 ##               P.Down
 ## GO:0022613 1.0000000
 ## GO:0042254 1.0000000
 ## GO:1990904 1.0000000
-## GO:0022626 0.9999987
+## GO:0022626 0.9999999
 ## GO:0006364 1.0000000
 ## GO:0016072 1.0000000
 ## GO:0003723 1.0000000
@@ -1537,28 +1537,28 @@ What is the second greatest source of variation in the data?</p>
 <p>Try the challenge interactively. Right-click on the launch button below and open in a new tab. May take a minute to launch.<br><a href="https://mybinder.org/v2/gh/mblue9/RNAseq-R_learnr_binder/HEAD?urlpath=shiny/challenge9/"><img src="http://mybinder.org/badge_logo.svg" alt="Binder"></a></p>
 <!---------------->
 <details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
-</summary><pre class="solution"><code>##                                                                     Term Ont
-## GO:0031090                                            organelle membrane  CC
-## GO:0005739                                                 mitochondrion  CC
-## GO:0005783                                         endoplasmic reticulum  CC
-## GO:0005515                                               protein binding  MF
-## GO:0005789                                endoplasmic reticulum membrane  CC
-## GO:0022626                                            cytosolic ribosome  CC
-## GO:0042175 nuclear outer membrane-endoplasmic reticulum membrane network  CC
-## GO:0050789                              regulation of biological process  BP
-## GO:0044281                              small molecule metabolic process  BP
-## GO:0005634                                                       nucleus  CC
-##               N   Up Down         P.Up       P.Down
-## GO:0031090 1946  390  709 9.998865e-01 1.233259e-43
-## GO:0005739 1676  291  597 1.000000e+00 1.405622e-35
-## GO:0005783 1379  263  519 9.999829e-01 1.637816e-34
-## GO:0005515 7422 2042 1672 1.518817e-29 9.998305e-01
-## GO:0005789  493   68  228 1.000000e+00 2.006631e-29
-## GO:0022626  102   75    7 2.095015e-29 9.999886e-01
-## GO:0042175  515   75  234 9.999998e-01 9.823731e-29
-## GO:0050789 8345 2257 1865 1.217543e-28 9.999991e-01
-## GO:0044281 1376  261  494 9.999722e-01 3.169760e-28
-## GO:0005634 6012 1693 1336 1.013031e-27 9.998554e-01</code></pre>
+</summary><pre class="solution"><code>##                                        Term Ont    N   Up Down         P.Up
+## GO:0031090               organelle membrane  CC 1964  392  716 9.999307e-01
+## GO:0005783            endoplasmic reticulum  CC 1472  276  558 9.999980e-01
+## GO:0005739                    mitochondrion  CC 1683  295  594 1.000000e+00
+## GO:0005634                          nucleus  CC 6007 1709 1331 5.598049e-31
+## GO:0005515                  protein binding  MF 7374 2035 1669 2.271986e-30
+## GO:0022626               cytosolic ribosome  CC   99   74    6 6.574495e-30
+## GO:0044281 small molecule metabolic process  BP 1325  257  484 9.997820e-01
+## GO:0050789 regulation of biological process  BP 8391 2273 1878 1.484283e-29
+## GO:0010467                  gene expression  BP 4567 1344  903 4.590825e-29
+## GO:0005789   endoplasmic reticulum membrane  CC  504   70  230 1.000000e+00
+##                  P.Down
+## GO:0031090 3.688997e-44
+## GO:0005783 2.637008e-38
+## GO:0005739 4.970746e-34
+## GO:0005634 9.999157e-01
+## GO:0005515 9.994448e-01
+## GO:0022626 9.999953e-01
+## GO:0044281 8.761890e-30
+## GO:0050789 9.999988e-01
+## GO:0010467 1.000000e+00
+## GO:0005789 1.234357e-28</code></pre>
 </details><p><br></p>
 <p>Notes</p>
 <ul>
@@ -1728,52 +1728,52 @@ What is the second greatest source of variation in the data?</p>
 <span class="va">myc.rst</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,<span class="op">]</span></code></pre></div>
 <pre><code>##                                                 NGenes   PropDown    PropUp
 ## COLLER_MYC_TARGETS_UP                               26 0.07692308 0.7692308
-## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN         57 0.08771930 0.7543860
 ## DANG_MYC_TARGETS_UP                                159 0.11949686 0.7106918
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                   28 0.07142857 0.6785714
-## DANG_REGULATED_BY_MYC_UP                            89 0.12359551 0.6741573
-## PID_MYC_ACTIV_PATHWAY                              101 0.15841584 0.6237624
+## SCHUHMACHER_MYC_TARGETS_UP                          99 0.12121212 0.6868687
 ## SCHLOSSER_MYC_TARGETS_REPRESSED_BY_SERUM           191 0.12565445 0.6020942
 ## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP         64 0.14062500 0.5781250
 ## KIM_MYC_AMPLIFICATION_TARGETS_UP                   227 0.16740088 0.4977974
-## BILD_MYC_ONCOGENIC_SIGNATURE                       286 0.27622378 0.4650350
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                   24 0.45833333 0.2083333
 ## BENPORATH_MYC_TARGETS_WITH_EBOX                    291 0.23024055 0.4295533
 ## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP    101 0.18811881 0.4059406
-## KIM_MYC_AMPLIFICATION_TARGETS_DN                   164 0.39634146 0.2195122
 ## ELLWOOD_MYC_TARGETS_UP                              19 0.10526316 0.3157895
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                   24 0.45833333 0.2083333
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN         57 0.08771930 0.7543860
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                   28 0.07142857 0.6785714
+## DANG_REGULATED_BY_MYC_UP                            89 0.12359551 0.6741573
+## PID_MYC_ACTIV_PATHWAY                              101 0.15841584 0.6237624
+## SCHLOSSER_MYC_AND_SERUM_RESPONSE_SYNERGY            46 0.19565217 0.4782609
 ##                                                 Direction PValue         FDR
-## COLLER_MYC_TARGETS_UP                                  Up  0.001 0.001535714
-## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN            Up  0.001 0.001535714
-## DANG_MYC_TARGETS_UP                                    Up  0.001 0.001535714
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                      Up  0.001 0.001535714
-## DANG_REGULATED_BY_MYC_UP                               Up  0.001 0.001535714
-## PID_MYC_ACTIV_PATHWAY                                  Up  0.001 0.001535714
-## SCHLOSSER_MYC_TARGETS_REPRESSED_BY_SERUM               Up  0.001 0.001535714
-## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP            Up  0.001 0.001535714
-## KIM_MYC_AMPLIFICATION_TARGETS_UP                       Up  0.001 0.001535714
-## BILD_MYC_ONCOGENIC_SIGNATURE                           Up  0.001 0.001535714
-## BENPORATH_MYC_TARGETS_WITH_EBOX                        Up  0.001 0.001535714
-## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP        Up  0.001 0.001535714
-## KIM_MYC_AMPLIFICATION_TARGETS_DN                     Down  0.001 0.001535714
-## ELLWOOD_MYC_TARGETS_UP                                 Up  0.001 0.001535714
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                    Down  0.002 0.004031250
+## COLLER_MYC_TARGETS_UP                                  Up  0.001 0.002150000
+## DANG_MYC_TARGETS_UP                                    Up  0.001 0.002150000
+## SCHUHMACHER_MYC_TARGETS_UP                             Up  0.001 0.002150000
+## SCHLOSSER_MYC_TARGETS_REPRESSED_BY_SERUM               Up  0.001 0.002150000
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP            Up  0.001 0.002150000
+## KIM_MYC_AMPLIFICATION_TARGETS_UP                       Up  0.001 0.002150000
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                    Down  0.001 0.002150000
+## BENPORATH_MYC_TARGETS_WITH_EBOX                        Up  0.001 0.002150000
+## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP        Up  0.001 0.002150000
+## ELLWOOD_MYC_TARGETS_UP                                 Up  0.001 0.002150000
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN            Up  0.002 0.003794118
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                      Up  0.002 0.003794118
+## DANG_REGULATED_BY_MYC_UP                               Up  0.002 0.003794118
+## PID_MYC_ACTIV_PATHWAY                                  Up  0.002 0.003794118
+## SCHLOSSER_MYC_AND_SERUM_RESPONSE_SYNERGY               Up  0.002 0.003794118
 ##                                                 PValue.Mixed FDR.Mixed
 ## COLLER_MYC_TARGETS_UP                                  0.001     0.001
-## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN            0.001     0.001
 ## DANG_MYC_TARGETS_UP                                    0.001     0.001
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                      0.001     0.001
-## DANG_REGULATED_BY_MYC_UP                               0.001     0.001
-## PID_MYC_ACTIV_PATHWAY                                  0.001     0.001
+## SCHUHMACHER_MYC_TARGETS_UP                             0.001     0.001
 ## SCHLOSSER_MYC_TARGETS_REPRESSED_BY_SERUM               0.001     0.001
 ## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_UP            0.001     0.001
 ## KIM_MYC_AMPLIFICATION_TARGETS_UP                       0.001     0.001
-## BILD_MYC_ONCOGENIC_SIGNATURE                           0.001     0.001
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                      0.001     0.001
 ## BENPORATH_MYC_TARGETS_WITH_EBOX                        0.001     0.001
 ## ACOSTA_PROLIFERATION_INDEPENDENT_MYC_TARGETS_UP        0.001     0.001
-## KIM_MYC_AMPLIFICATION_TARGETS_DN                       0.001     0.001
-## ELLWOOD_MYC_TARGETS_UP                                 0.001     0.001
-## CAIRO_PML_TARGETS_BOUND_BY_MYC_DN                      0.001     0.001</code></pre>
+## ELLWOOD_MYC_TARGETS_UP                                 0.002     0.002
+## SCHLOSSER_MYC_TARGETS_AND_SERUM_RESPONSE_DN            0.002     0.002
+## CAIRO_PML_TARGETS_BOUND_BY_MYC_UP                      0.001     0.001
+## DANG_REGULATED_BY_MYC_UP                               0.001     0.001
+## PID_MYC_ACTIV_PATHWAY                                  0.002     0.002
+## SCHLOSSER_MYC_AND_SERUM_RESPONSE_SYNERGY               0.003     0.003</code></pre>
 <p>Each row corresponds to a single gene set. The NGenes column gives the number of genes in each set. The PropDown and PropUp columns contain the proportions of genes in the set that are down- and up-regulated, respectively, with absolute fold changes greater than 2. The net direction of change is determined from the significance of changes in each direction, and is shown in the Direction column. The PValue provides evidence for whether the majority of genes in the set are DE in the specified direction, whereas the PValue.Mixed tests for differential expression in any direction. FDRs are computed from the corresponding p-values across all sets.</p>
 <div id="challenge">
 <p><i class="fas fa-pencil-alt"></i> <strong>Challenge 11</strong></p>
@@ -1787,43 +1787,43 @@ What is the second greatest source of variation in the data?</p>
 <!---------------->
 <details><summary><i class="far fa-eye"></i> <strong>Solution</strong>
 </summary><pre class="solution"><code>##                                     NGenes  PropDown    PropUp Direction PValue
+## ODONNELL_TARGETS_OF_MYC_AND_TFRC_DN     54 0.6481481 0.1481481      Down  0.001
 ## PID_MYC_PATHWAY                         35 0.2000000 0.5428571        Up  0.001
 ## ELLWOOD_MYC_TARGETS_DN                  61 0.5409836 0.2622951      Down  0.001
 ## BENPORATH_MYC_TARGETS_WITH_EBOX        291 0.3024055 0.4329897        Up  0.001
-## BILD_MYC_ONCOGENIC_SIGNATURE           286 0.2902098 0.4195804        Up  0.001
 ## PID_MYC_REPRESS_PATHWAY                 93 0.2150538 0.3978495        Up  0.001
 ## ELLWOOD_MYC_TARGETS_UP                  19 0.2105263 0.3684211        Up  0.001
-## ODONNELL_TARGETS_OF_MYC_AND_TFRC_DN     54 0.6481481 0.1481481      Down  0.002
+## LEE_LIVER_CANCER_MYC_TGFA_DN            63 0.3650794 0.3492063      Down  0.001
 ## DANG_MYC_TARGETS_DN                     43 0.2325581 0.5813953        Up  0.002
-## LEE_LIVER_CANCER_MYC_TGFA_DN            63 0.3650794 0.3492063      Down  0.002
-## ALFANO_MYC_TARGETS                     365 0.2794521 0.4027397        Up  0.004
-## ODONNELL_TARGETS_OF_MYC_AND_TFRC_UP    137 0.3576642 0.2262774      Down  0.005
-## SCHUHMACHER_MYC_TARGETS_UP              99 0.4646465 0.3131313      Down  0.006
-## YU_MYC_TARGETS_UP                       47 0.7021277 0.1063830      Down  0.007
-## PID_MYC_ACTIV_PATHWAY                  101 0.2970297 0.4158416        Up  0.008
-## DANG_REGULATED_BY_MYC_DN               343 0.2565598 0.4169096        Up  0.012
+## BILD_MYC_ONCOGENIC_SIGNATURE           286 0.2902098 0.4195804        Up  0.002
+## ODONNELL_TARGETS_OF_MYC_AND_TFRC_UP    137 0.3576642 0.2262774      Down  0.003
+## YU_MYC_TARGETS_UP                       47 0.7021277 0.1063830      Down  0.005
+## SCHUHMACHER_MYC_TARGETS_UP              99 0.4646465 0.3131313      Down  0.005
+## ALFANO_MYC_TARGETS                     365 0.2794521 0.4027397        Up  0.008
+## DANG_REGULATED_BY_MYC_DN               343 0.2565598 0.4169096        Up  0.011
+## PID_MYC_ACTIV_PATHWAY                  101 0.2970297 0.4158416        Up  0.011
 ##                                             FDR PValue.Mixed FDR.Mixed
-## PID_MYC_PATHWAY                     0.003583333        0.001     0.001
-## ELLWOOD_MYC_TARGETS_DN              0.003583333        0.001     0.001
-## BENPORATH_MYC_TARGETS_WITH_EBOX     0.003583333        0.001     0.001
-## BILD_MYC_ONCOGENIC_SIGNATURE        0.003583333        0.001     0.001
-## PID_MYC_REPRESS_PATHWAY             0.003583333        0.001     0.001
-## ELLWOOD_MYC_TARGETS_UP              0.003583333        0.001     0.001
-## ODONNELL_TARGETS_OF_MYC_AND_TFRC_DN 0.007166667        0.001     0.001
+## ODONNELL_TARGETS_OF_MYC_AND_TFRC_DN 0.003071429        0.001     0.001
+## PID_MYC_PATHWAY                     0.003071429        0.001     0.001
+## ELLWOOD_MYC_TARGETS_DN              0.003071429        0.001     0.001
+## BENPORATH_MYC_TARGETS_WITH_EBOX     0.003071429        0.001     0.001
+## PID_MYC_REPRESS_PATHWAY             0.003071429        0.001     0.001
+## ELLWOOD_MYC_TARGETS_UP              0.003071429        0.001     0.001
+## LEE_LIVER_CANCER_MYC_TGFA_DN        0.003071429        0.001     0.001
 ## DANG_MYC_TARGETS_DN                 0.007166667        0.001     0.001
-## LEE_LIVER_CANCER_MYC_TGFA_DN        0.007166667        0.001     0.001
-## ALFANO_MYC_TARGETS                  0.015050000        0.001     0.001
-## ODONNELL_TARGETS_OF_MYC_AND_TFRC_UP 0.017590909        0.001     0.001
-## SCHUHMACHER_MYC_TARGETS_UP          0.019708333        0.001     0.001
-## YU_MYC_TARGETS_UP                   0.021500000        0.002     0.002
-## PID_MYC_ACTIV_PATHWAY               0.023035714        0.001     0.001
-## DANG_REGULATED_BY_MYC_DN            0.032966667        0.001     0.001</code></pre>
+## BILD_MYC_ONCOGENIC_SIGNATURE        0.007166667        0.001     0.001
+## ODONNELL_TARGETS_OF_MYC_AND_TFRC_UP 0.010750000        0.001     0.001
+## YU_MYC_TARGETS_UP                   0.016125000        0.001     0.001
+## SCHUHMACHER_MYC_TARGETS_UP          0.016125000        0.001     0.001
+## ALFANO_MYC_TARGETS                  0.024807692        0.001     0.001
+## DANG_REGULATED_BY_MYC_DN            0.030100000        0.001     0.001
+## PID_MYC_ACTIV_PATHWAY               0.030100000        0.001     0.001</code></pre>
 <pre class="solution"><code>##                                                                                   NGenes
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                               16
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING              6
 ## PID_WNT_NONCANONICAL_PATHWAY                                                          47
-## PID_WNT_CANONICAL_PATHWAY                                                             29
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                        91
+## PID_WNT_CANONICAL_PATHWAY                                                             29
 ## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                    11
 ## BIOCARTA_WNT_PATHWAY                                                                  41
 ## KEGG_WNT_SIGNALING_PATHWAY                                                           151
@@ -1838,8 +1838,8 @@ What is the second greatest source of variation in the data?</p>
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                           0.2500000
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING         0.1666667
 ## PID_WNT_NONCANONICAL_PATHWAY                                                      0.4255319
-## PID_WNT_CANONICAL_PATHWAY                                                         0.4482759
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                    0.2087912
+## PID_WNT_CANONICAL_PATHWAY                                                         0.4482759
 ## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                0.4545455
 ## BIOCARTA_WNT_PATHWAY                                                              0.2926829
 ## KEGG_WNT_SIGNALING_PATHWAY                                                        0.3642384
@@ -1854,8 +1854,8 @@ What is the second greatest source of variation in the data?</p>
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                           0.62500000
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING         0.50000000
 ## PID_WNT_NONCANONICAL_PATHWAY                                                      0.14893617
-## PID_WNT_CANONICAL_PATHWAY                                                         0.13793103
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                    0.38461538
+## PID_WNT_CANONICAL_PATHWAY                                                         0.13793103
 ## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                0.09090909
 ## BIOCARTA_WNT_PATHWAY                                                              0.36585366
 ## KEGG_WNT_SIGNALING_PATHWAY                                                        0.24503311
@@ -1870,8 +1870,8 @@ What is the second greatest source of variation in the data?</p>
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                                  Up
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING                Up
 ## PID_WNT_NONCANONICAL_PATHWAY                                                           Down
-## PID_WNT_CANONICAL_PATHWAY                                                              Down
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                           Up
+## PID_WNT_CANONICAL_PATHWAY                                                              Down
 ## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                     Down
 ## BIOCARTA_WNT_PATHWAY                                                                     Up
 ## KEGG_WNT_SIGNALING_PATHWAY                                                             Down
@@ -1886,41 +1886,41 @@ What is the second greatest source of variation in the data?</p>
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                            0.001
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING          0.001
 ## PID_WNT_NONCANONICAL_PATHWAY                                                       0.001
-## PID_WNT_CANONICAL_PATHWAY                                                          0.003
-## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                     0.004
-## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                 0.010
-## BIOCARTA_WNT_PATHWAY                                                               0.018
-## KEGG_WNT_SIGNALING_PATHWAY                                                         0.025
-## WILLERT_WNT_SIGNALING                                                              0.028
-## PID_WNT_SIGNALING_PATHWAY                                                          0.047
-## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                                0.061
-## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                            0.104
-## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                     0.235
-## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                                0.274
-## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS  0.326
-##                                                                                           FDR
-## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                           0.003666667
-## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING         0.003666667
-## PID_WNT_NONCANONICAL_PATHWAY                                                      0.003666667
-## PID_WNT_CANONICAL_PATHWAY                                                         0.013750000
-## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                    0.015400000
-## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                0.034833333
-## BIOCARTA_WNT_PATHWAY                                                              0.055000000
-## KEGG_WNT_SIGNALING_PATHWAY                                                        0.067222222
-## WILLERT_WNT_SIGNALING                                                             0.067222222
-## PID_WNT_SIGNALING_PATHWAY                                                         0.102300000
-## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                               0.121000000
-## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                           0.189750000
-## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                    0.396846154
-## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                               0.429785714
-## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS 0.477400000
+## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                     0.001
+## PID_WNT_CANONICAL_PATHWAY                                                          0.002
+## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                 0.012
+## BIOCARTA_WNT_PATHWAY                                                               0.014
+## KEGG_WNT_SIGNALING_PATHWAY                                                         0.017
+## WILLERT_WNT_SIGNALING                                                              0.029
+## PID_WNT_SIGNALING_PATHWAY                                                          0.043
+## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                                0.075
+## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                            0.095
+## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                     0.231
+## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                                0.240
+## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS  0.302
+##                                                                                          FDR
+## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                           0.00275000
+## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING         0.00275000
+## PID_WNT_NONCANONICAL_PATHWAY                                                      0.00275000
+## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                    0.00275000
+## PID_WNT_CANONICAL_PATHWAY                                                         0.00660000
+## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                0.04216667
+## BIOCARTA_WNT_PATHWAY                                                              0.04242857
+## KEGG_WNT_SIGNALING_PATHWAY                                                        0.04537500
+## WILLERT_WNT_SIGNALING                                                             0.06966667
+## PID_WNT_SIGNALING_PATHWAY                                                         0.09350000
+## REACTOME_SIGNALING_BY_WNT_IN_CANCER                                               0.14900000
+## REACTOME_WNT_MEDIATED_ACTIVATION_OF_DVL                                           0.17325000
+## REACTOME_WNT_LIGAND_BIOGENESIS_AND_TRAFFICKING                                    0.37635714
+## REACTOME_TCF_DEPENDENT_SIGNALING_IN_RESPONSE_TO_WNT                               0.37635714
+## REACTOME_NEGATIVE_REGULATION_OF_TCF_DEPENDENT_SIGNALING_BY_WNT_LIGAND_ANTAGONISTS 0.44220000
 ##                                                                                   PValue.Mixed
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                                  0.001
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING                0.003
-## PID_WNT_NONCANONICAL_PATHWAY                                                             0.001
-## PID_WNT_CANONICAL_PATHWAY                                                                0.001
+## PID_WNT_NONCANONICAL_PATHWAY                                                             0.002
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                           0.001
-## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                       0.009
+## PID_WNT_CANONICAL_PATHWAY                                                                0.001
+## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                       0.010
 ## BIOCARTA_WNT_PATHWAY                                                                     0.001
 ## KEGG_WNT_SIGNALING_PATHWAY                                                               0.001
 ## WILLERT_WNT_SIGNALING                                                                    0.001
@@ -1933,10 +1933,10 @@ What is the second greatest source of variation in the data?</p>
 ##                                                                                   FDR.Mixed
 ## REACTOME_REPRESSION_OF_WNT_TARGET_GENES                                               0.001
 ## REACTOME_RUNX1_REGULATES_TRANSCRIPTION_OF_GENES_INVOLVED_IN_WNT_SIGNALING             0.003
-## PID_WNT_NONCANONICAL_PATHWAY                                                          0.001
-## PID_WNT_CANONICAL_PATHWAY                                                             0.001
+## PID_WNT_NONCANONICAL_PATHWAY                                                          0.002
 ## SANSOM_WNT_PATHWAY_REQUIRE_MYC                                                        0.001
-## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                    0.009
+## PID_WNT_CANONICAL_PATHWAY                                                             0.001
+## REACTOME_RNF_MUTANTS_SHOW_ENHANCED_WNT_SIGNALING_AND_PROLIFERATION                    0.010
 ## BIOCARTA_WNT_PATHWAY                                                                  0.001
 ## KEGG_WNT_SIGNALING_PATHWAY                                                            0.001
 ## WILLERT_WNT_SIGNALING                                                                 0.001
@@ -2020,9 +2020,9 @@ What is the second greatest source of variation in the data?</p>
 <p>The session information describes the versions of R and of the packages that were used in the analysis. This is useful for record-keeping purposes, and ensures that an analysis can be reproduced even when the software is updated over time.</p>
 <div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.0.3 (2020-10-10)
+<pre><code>## R version 4.1.0 (2021-05-18)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 20.04 LTS
+## Running under: Ubuntu 20.04.2 LTS
 ## 
 ## Matrix products: default
 ## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
@@ -2040,58 +2040,59 @@ What is the second greatest source of variation in the data?</p>
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] NMF_0.23.0           cluster_2.1.1        rngtools_1.5        
+##  [1] NMF_0.23.0           cluster_2.1.2        rngtools_1.5        
 ##  [4] pkgmaker_0.32.2      registry_0.5-1       RColorBrewer_1.1-2  
-##  [7] gplots_3.1.1         org.Mm.eg.db_3.12.0  AnnotationDbi_1.52.0
-## [10] IRanges_2.24.1       S4Vectors_0.28.1     Biobase_2.50.0      
-## [13] BiocGenerics_0.36.1  Glimma_2.0.0         edgeR_3.32.1        
-## [16] limma_3.46.0        
+##  [7] gplots_3.1.1         org.Mm.eg.db_3.13.0  AnnotationDbi_1.54.1
+## [10] IRanges_2.26.0       S4Vectors_0.30.0     Biobase_2.52.0      
+## [13] BiocGenerics_0.38.0  Glimma_2.2.0         edgeR_3.34.0        
+## [16] limma_3.48.1        
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] bitops_1.0-7                matrixStats_0.58.0         
+##  [1] bitops_1.0-7                matrixStats_0.59.0         
 ##  [3] fs_1.5.0                    bit64_4.0.5                
 ##  [5] doParallel_1.0.16           httr_1.4.2                 
-##  [7] rprojroot_2.0.2             GenomeInfoDb_1.26.7        
-##  [9] tools_4.0.3                 utf8_1.2.1                 
-## [11] R6_2.5.0                    KernSmooth_2.23-18         
-## [13] DBI_1.1.1                   colorspace_2.0-1           
-## [15] withr_2.4.2                 DESeq2_1.30.1              
-## [17] bit_4.0.4                   compiler_4.0.3             
-## [19] textshaping_0.3.3           BiasedUrn_1.07             
-## [21] desc_1.3.0                  DelayedArray_0.16.3        
+##  [7] rprojroot_2.0.2             GenomeInfoDb_1.28.1        
+##  [9] tools_4.1.0                 utf8_1.2.1                 
+## [11] R6_2.5.0                    KernSmooth_2.23-20         
+## [13] DBI_1.1.1                   colorspace_2.0-2           
+## [15] withr_2.4.2                 DESeq2_1.32.0              
+## [17] bit_4.0.4                   compiler_4.1.0             
+## [19] textshaping_0.3.5           BiasedUrn_1.07             
+## [21] desc_1.3.0                  DelayedArray_0.18.0        
 ## [23] caTools_1.18.2              scales_1.1.1               
-## [25] genefilter_1.72.1           pkgdown_1.6.1              
-## [27] systemfonts_1.0.1           stringr_1.4.0              
-## [29] digest_0.6.27               rmarkdown_2.8              
-## [31] XVector_0.30.0              pkgconfig_2.0.3            
-## [33] htmltools_0.5.1.1           MatrixGenerics_1.2.1       
+## [25] genefilter_1.74.0           pkgdown_1.6.1              
+## [27] systemfonts_1.0.2           stringr_1.4.0              
+## [29] digest_0.6.27               rmarkdown_2.9              
+## [31] XVector_0.32.0              pkgconfig_2.0.3            
+## [33] htmltools_0.5.1.1           MatrixGenerics_1.4.0       
 ## [35] highr_0.9                   fastmap_1.1.0              
 ## [37] htmlwidgets_1.5.3           rlang_0.4.11               
 ## [39] RSQLite_2.2.7               jsonlite_1.7.2             
-## [41] BiocParallel_1.24.1         gtools_3.8.2               
+## [41] BiocParallel_1.26.1         gtools_3.9.2               
 ## [43] RCurl_1.98-1.3              magrittr_2.0.1             
-## [45] GO.db_3.12.1                GenomeInfoDbData_1.2.4     
-## [47] Matrix_1.3-2                Rcpp_1.0.6                 
-## [49] munsell_0.5.0               fansi_0.4.2                
-## [51] lifecycle_1.0.0             stringi_1.5.3              
-## [53] yaml_2.2.1                  SummarizedExperiment_1.20.0
-## [55] zlibbioc_1.36.0             plyr_1.8.6                 
-## [57] grid_4.0.3                  blob_1.2.1                 
-## [59] crayon_1.4.1                lattice_0.20-41            
-## [61] splines_4.0.3               annotate_1.68.0            
-## [63] locfit_1.5-9.4              knitr_1.33                 
-## [65] pillar_1.6.0                GenomicRanges_1.42.0       
-## [67] reshape2_1.4.4              geneplotter_1.68.0         
-## [69] codetools_0.2-18            XML_3.99-0.6               
-## [71] glue_1.4.2                  evaluate_0.14              
-## [73] foreach_1.5.1               vctrs_0.3.8                
-## [75] gtable_0.3.0                assertthat_0.2.1           
-## [77] cachem_1.0.4                ggplot2_3.3.3              
-## [79] gridBase_0.4-7              xfun_0.22                  
-## [81] xtable_1.8-4                ragg_1.1.2                 
-## [83] survival_3.2-7              tibble_3.1.1               
-## [85] iterators_1.0.13            memoise_2.0.0              
-## [87] ellipsis_0.3.2</code></pre>
+## [45] GO.db_3.13.0                GenomeInfoDbData_1.2.6     
+## [47] Matrix_1.3-4                Rcpp_1.0.7                 
+## [49] munsell_0.5.0               fansi_0.5.0                
+## [51] lifecycle_1.0.0             stringi_1.7.2              
+## [53] yaml_2.2.1                  SummarizedExperiment_1.22.0
+## [55] zlibbioc_1.38.0             plyr_1.8.6                 
+## [57] grid_4.1.0                  blob_1.2.1                 
+## [59] crayon_1.4.1                lattice_0.20-44            
+## [61] Biostrings_2.60.1           splines_4.1.0              
+## [63] annotate_1.70.0             KEGGREST_1.32.0            
+## [65] locfit_1.5-9.4              knitr_1.33                 
+## [67] pillar_1.6.1                GenomicRanges_1.44.0       
+## [69] reshape2_1.4.4              codetools_0.2-18           
+## [71] geneplotter_1.70.0          XML_3.99-0.6               
+## [73] glue_1.4.2                  evaluate_0.14              
+## [75] foreach_1.5.1               png_0.1-7                  
+## [77] vctrs_0.3.8                 gtable_0.3.0               
+## [79] assertthat_0.2.1            cachem_1.0.5               
+## [81] ggplot2_3.3.5               gridBase_0.4-7             
+## [83] xfun_0.24                   xtable_1.8-4               
+## [85] ragg_1.1.3                  survival_3.2-11            
+## [87] tibble_3.1.2                iterators_1.0.13           
+## [89] memoise_2.0.0               ellipsis_0.3.2</code></pre>
 </div>
 <div id="feedback" class="section level1">
 <h1 class="hasAnchor">
